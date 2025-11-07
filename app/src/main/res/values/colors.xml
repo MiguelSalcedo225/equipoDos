@@ -5,4 +5,7 @@
     <color name="backgroundColor">#A7AED4</color>
     <color name="backgroundColorItem">#e7e0eb</color>
     <color name="backgroudColorBtn">#009688</color>
+    <color name="primary_orange">#e7522e</color>
+    <color name="dark_background">#CC000000</color>
+    <color name="toolbar_gray">#424242</color>
 </resources>

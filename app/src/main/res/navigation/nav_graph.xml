@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeInventoryFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/homeInventoryFragment"
+        android:id="@+id/homeFragment"
         android:name="com.example.inventorywidget.view.fragment.HomeInventoryFragment"
-        android:label="fragment_home_inventory"
-        tools:layout="@layout/fragment_home_inventory" >
+        android:label="Inventario"
+        tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeInventoryFragment_to_addItemFragment"
             app:destination="@id/addItemFragment" />
@@ -39,8 +39,8 @@
         tools:layout="@layout/fragment_item_edit" >
         <action
             android:id="@+id/action_itemEditFragment_to_homeInventoryFragment"
-            app:destination="@id/homeInventoryFragment"
-            app:popUpTo="@+id/homeInventoryFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@+id/homeFragment"
             app:popUpToInclusive="true"/>
     </fragment>
 </navigation>

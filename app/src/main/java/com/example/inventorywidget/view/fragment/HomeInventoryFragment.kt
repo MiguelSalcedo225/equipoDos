@@ -10,59 +10,19 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.inventorywidget.R
-import com.example.inventorywidget.databinding.FragmentHomeInventoryBinding
+import com.example.inventorywidget.databinding.FragmentHomeBinding
 import com.example.inventorywidget.view.adapter.InventoryAdapter
 import com.example.inventorywidget.viewmodel.InventoryViewModel
 class HomeInventoryFragment : Fragment() {
-    private lateinit var binding: FragmentHomeInventoryBinding
+    private lateinit var binding: FragmentHomeBinding
     private val inventoryViewModel: InventoryViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentHomeInventoryBinding.inflate(inflater)
+        binding = FragmentHomeBinding.inflate(inflater)
         binding.lifecycleOwner = this
         return binding.root
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        controladores()
-        observadorViewModel()
-
-    }
-
-    private fun controladores() {
-        binding.fbagregar.setOnClickListener {
-            findNavController().navigate(R.id.action_homeInventoryFragment_to_addItemFragment)
-        }
-
-    }
-
-    private fun observadorViewModel(){
-        observerListInventory()
-        observerProgress()
-    }
-
-    private fun observerListInventory(){
-
-        inventoryViewModel.getListInventory()
-        inventoryViewModel.listInventory.observe(viewLifecycleOwner){ listInventory ->
-            val recycler = binding.recyclerview
-            val layoutManager =LinearLayoutManager(context)
-            recycler.layoutManager = layoutManager
-            val adapter = InventoryAdapter(listInventory, findNavController())
-            recycler.adapter = adapter
-            adapter.notifyDataSetChanged()
-
-        }
-
-    }
-    private fun observerProgress(){
-        inventoryViewModel.progresState.observe(viewLifecycleOwner){status ->
-            binding.progress.isVisible = status
-        }
-    }
-
 }
