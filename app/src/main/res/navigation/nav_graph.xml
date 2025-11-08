@@ -24,17 +24,15 @@
             app:popUpToInclusive="true" />
     </fragment>
 
+    <!-- Home Fragment -->
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.inventorywidget.view.fragment.HomeInventoryFragment"
+        android:name="com.example.inventorywidget.view.fragment.HomeFragment"
         android:label="Inventario"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_homeInventoryFragment_to_addItemFragment"
+            android:id="@+id/action_homeFragment_to_addProductFragment"
             app:destination="@id/addItemFragment" />
-        <action
-            android:id="@+id/action_homeInventoryFragment_to_itemDetailsFragment"
-            app:destination="@id/itemDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addItemFragment"

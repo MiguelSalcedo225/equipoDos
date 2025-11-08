@@ -68,9 +68,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:contentDescription="Agregar producto"
-            app:srcCompat="@android:drawable/ic_input_add"
+            app:srcCompat="@drawable/ic_input_add"
+            app:tint="@color/dark_background"
             app:backgroundTint="@color/primary_orange"
-            app:tint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
