@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">InventoryWidget</string>
     <string name="tituloInventario">Inventario</string>
+    <string name="inventory_icon_description">Ícono de inventario</string>
+
 
 </resources>
