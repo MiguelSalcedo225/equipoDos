@@ -1,4 +1,4 @@
-package com.example.inventorywidget.view.fragment.login
+package com.example.inventorywidget.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,9 +14,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.inventorywidget.R
 import com.example.inventorywidget.databinding.FragmentLoginBinding
 import com.example.inventorywidget.viewmodel.AuthenticationState
-import java.util.concurrent.Executor
 import com.example.inventorywidget.viewmodel.LoginViewModel
 import com.example.inventorywidget.viewmodel.LoginViewModelFactory
+import java.util.concurrent.Executor
 
 /**
  * Fragment de Login con autenticación biométrica
@@ -55,7 +55,8 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupBiometricAuthentication() {
-        biometricPrompt = BiometricPrompt(this, executor,
+        biometricPrompt = BiometricPrompt(
+            this, executor,
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
@@ -137,4 +138,3 @@ class LoginFragment : Fragment() {
         _binding = null
     }
 }
-
