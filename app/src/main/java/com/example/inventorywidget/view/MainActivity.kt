@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.inventorywidget.databinding.ActivityMainBinding
 import com.example.inventorywidget.R
@@ -53,11 +54,11 @@ class MainActivity : AppCompatActivity() {
             // 2. Handle the exceptions
             when (destination.id) {
                 R.id.homeFragment -> {
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
                     // Show logout button only on home
                     binding.btnLogout.visibility = View.VISIBLE
                     binding.btnLogout.setOnClickListener {
-
-                        loginViewModel.logout()
+                        mostrarDialogoCerrarSesion()
 
                     }
                 }
@@ -75,6 +76,16 @@ class MainActivity : AppCompatActivity() {
 
 
         return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+    private fun mostrarDialogoCerrarSesion() {
+        AlertDialog.Builder(this)
+            .setTitle("Cerrar sesión")
+            .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+            .setPositiveButton("Sí") { _, _ ->
+                loginViewModel.logout()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     private fun observeAuthenticationState() {
