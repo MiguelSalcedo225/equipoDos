@@ -40,7 +40,7 @@ class ItemDetailsFragment : Fragment() {
         binding.fbEdit.setOnClickListener {
             val bundle = Bundle()
             bundle.putSerializable("dataInventory", receivedInventory)
-            findNavController().navigate(R.id.action_itemDetailsFragment_to_itemEditFragment, bundle)
+            findNavController().navigate(R.id.action_detailFragment_to_editFragment, bundle)
         }
     }
 
