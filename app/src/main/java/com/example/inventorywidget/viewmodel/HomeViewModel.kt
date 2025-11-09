@@ -3,12 +3,9 @@ package com.example.inventorywidget.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
-import com.example.inventorywidget.model.Inventory
-import com.example.inventorywidget.repository.InventoryRepository
-import kotlinx.coroutines.launch
+import com.example.inventorywidget.repository.ProductRepository
+import com.example.inventorywidget.model.Product
 
 /**
  * ViewModel para la pantalla Home (lista de productos)
@@ -16,22 +13,11 @@ import kotlinx.coroutines.launch
  */
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = InventoryRepository(application)
+    private val repository = ProductRepository(application)
 
-    // LiveData que contiene todos los productos
-    private val _allProducts = MutableLiveData<List<Inventory>>()
-    val allProducts: LiveData<List<Inventory>> get() = _allProducts
+    /** Lista de todos los productos como LiveData (actualización en tiempo real) */
+    val allProducts: LiveData<List<Product>> = repository.allProducts.asLiveData()
 
-    // LiveData que contiene el saldo total del inventario
-    val totalInventoryValue: LiveData<Double?> = repository.getTotalInventoryValue().asLiveData()
-
-    init {
-        loadAllProducts()
-    }
-
-    private fun loadAllProducts() {
-        viewModelScope.launch {
-            _allProducts.value = repository.getAllInventory()
-        }
-    }
+    /** Valor total del inventario (observa cambios automáticamente) */
+    val totalInventoryValue: LiveData<Double?> = repository.totalInventoryValue.asLiveData()
 }

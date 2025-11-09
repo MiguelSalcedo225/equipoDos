@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.inventorywidget.model.Inventory
+import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.utils.Constants.NAME_BD
 
 /**
@@ -12,27 +12,29 @@ import com.example.inventorywidget.utils.Constants.NAME_BD
  * Implementa patrón Singleton para asegurar una sola instancia.
  */
 @Database(
-    entities = [Inventory::class],
+    entities = [Product::class],
     version = 1,
     exportSchema = false
 )
-abstract class InventoryDB : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun inventoryDao(): InventoryDao
+    abstract fun productDao(): ProductDao
 
     companion object {
         @Volatile
-        private var INSTANCE: InventoryDB? = null
+        private var INSTANCE: AppDatabase? = null
+
+        private const val DATABASE_NAME = "inventory_database"
 
         /**
          * Obtiene la instancia única de la base de datos.
          */
-        fun getDatabase(context: Context): InventoryDB {
+        fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    InventoryDB::class.java,
-                    NAME_BD
+                    AppDatabase::class.java,
+                    DATABASE_NAME
                 )
                     .fallbackToDestructiveMigration() // recrea la BD si cambia versión
                     .build()

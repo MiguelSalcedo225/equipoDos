@@ -9,13 +9,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.inventorywidget.R
 import com.example.inventorywidget.databinding.FragmentItemDetailsBinding
-import com.example.inventorywidget.model.Inventory
+import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.viewmodel.InventoryViewModel
 
 class ItemDetailsFragment : Fragment() {
     private lateinit var binding: FragmentItemDetailsBinding
     private val inventoryViewModel: InventoryViewModel by viewModels()
-    private lateinit var receivedInventory: Inventory
+    private lateinit var receivedProduct: Product
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,28 +39,27 @@ class ItemDetailsFragment : Fragment() {
 
         binding.fbEdit.setOnClickListener {
             val bundle = Bundle()
-            bundle.putSerializable("dataInventory", receivedInventory)
+            bundle.putSerializable("dataInventory", receivedProduct)
             findNavController().navigate(R.id.action_detailFragment_to_editFragment, bundle)
         }
     }
 
     private fun dataInventory() {
         val receivedBundle = arguments
-        receivedInventory = receivedBundle?.getSerializable("clave") as Inventory
-        binding.tvItem.text = "${receivedInventory.name}"
-        binding.tvPrice.text = "$ ${receivedInventory.price}"
-        binding.tvQuantity.text = "${receivedInventory.quantity}"
+        receivedProduct = receivedBundle?.getSerializable("clave") as Product
+        binding.tvItem.text = "${receivedProduct.name}"
+        binding.tvPrice.text = "$ ${receivedProduct.unitPrice}"
+        binding.tvQuantity.text = "${receivedProduct.quantity}"
         binding.txtTotal.text = "$ ${
             inventoryViewModel.totalProducto(
-                receivedInventory.price,
-                receivedInventory.quantity
+                receivedProduct.unitPrice,
+                receivedProduct.quantity
             )
         }"
     }
 
     private fun deleteInventory(){
-        inventoryViewModel.deleteInventory(receivedInventory)
-        inventoryViewModel.getListInventory()
+        inventoryViewModel.deleteInventory(receivedProduct)
         findNavController().popBackStack()
     }
 

@@ -5,13 +5,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.inventorywidget.model.Inventory
-import com.example.inventorywidget.repository.InventoryRepository
+import com.example.inventorywidget.model.Product
+import com.example.inventorywidget.repository.ProductRepository
 import kotlinx.coroutines.launch
 
 class AddItemViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = InventoryRepository(application)
+    private val repository = ProductRepository(application)
     private val _saveResult = MutableLiveData<SaveResult>()
     val saveResult: LiveData<SaveResult> = _saveResult
 
@@ -24,7 +24,7 @@ class AddItemViewModel(application: Application) : AndroidViewModel(application)
                     return@launch
                 }
 
-                val existing = repository.getInventoryByCode(code.toInt())
+                val existing = repository.getProductByCode(code.toInt())
                 if (existing != null) {
                     _saveResult.value = SaveResult.Error("Ya existe un producto con el código $code")
                     return@launch
@@ -47,14 +47,14 @@ class AddItemViewModel(application: Application) : AndroidViewModel(application)
                     return@launch
                 }
 
-                val inventory = Inventory(
+                val product = Product(
                     code = code.toInt(),
                     name = name,
-                    price = priceValue,
+                    unitPrice = priceValue,
                     quantity = quantityValue
                 )
 
-                repository.insertInventory(inventory)
+                repository.insertProduct(product)
                 _saveResult.value = SaveResult.Success
 
             } catch (e: Exception) {

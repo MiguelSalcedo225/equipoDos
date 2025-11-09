@@ -41,7 +41,7 @@
 
     <fragment
         android:id="@+id/addItemFragment"
-        android:name="com.example.inventorywidget.view.fragment.AddItemFragment"
+        android:name="com.example.inventorywidget.view.fragment.AddProductFragment"
         android:label="fragment_add_item"
         tools:layout="@layout/fragment_add_item" />
 

@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
  * Factory para crear instancias de AddItemViewModel
  * Proporciona el Application que requiere el constructor del ViewModel
  */
-class AddItemViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+class AddProductViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(AddItemViewModel::class.java)) {

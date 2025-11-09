@@ -9,13 +9,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.inventorywidget.R
 import com.example.inventorywidget.databinding.FragmentItemEditBinding
-import com.example.inventorywidget.model.Inventory
+import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.viewmodel.InventoryViewModel
 
 class ItemEditFragment : Fragment() {
     private lateinit var binding: FragmentItemEditBinding
     private val inventoryViewModel: InventoryViewModel by viewModels()
-    private lateinit var receivedInventory: Inventory
+    private lateinit var receivedProduct: Product
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,10 +41,10 @@ class ItemEditFragment : Fragment() {
 
     private fun dataInventory(){
         val receivedBundle = arguments
-        receivedInventory = receivedBundle?.getSerializable("dataInventory") as Inventory
-        binding.etName.setText(receivedInventory.name)
-        binding.etPrice.setText(receivedInventory.price.toString())
-        binding.etQuantity.setText(receivedInventory.quantity.toString())
+        receivedProduct = receivedBundle?.getSerializable("dataInventory") as Product
+        binding.etName.setText(receivedProduct.name)
+        binding.etPrice.setText(receivedProduct.unitPrice.toString())
+        binding.etQuantity.setText(receivedProduct.quantity.toString())
 
     }
 
@@ -52,8 +52,8 @@ class ItemEditFragment : Fragment() {
         val name = binding.etName.text.toString()
         val price = binding.etPrice.text.toString().toDouble()
         val quantity = binding.etQuantity.text.toString().toInt()
-        val inventory = Inventory(receivedInventory.code, name, price, quantity)
-        inventoryViewModel.updateInventory(inventory)
+        val product = Product(receivedProduct.code, name, price, quantity)
+        inventoryViewModel.updateInventory(product)
         findNavController().navigate(R.id.action_itemEditFragment_to_homeInventoryFragment)
 
     }

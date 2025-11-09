@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:background="@color/backgroundColor"
         android:padding="20dp"
-        tools:context=".view.fragment.AddItemFragment">
+        tools:context=".view.fragment.AddProductFragment">
 
         <TextView
             android:id="@+id/tvNameEdit"
