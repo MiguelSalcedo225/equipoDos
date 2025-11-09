@@ -4,76 +4,70 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.inventorywidget.model.Inventory
 import com.example.inventorywidget.repository.InventoryRepository
 import kotlinx.coroutines.launch
 
-
 class InventoryViewModel(application: Application) : AndroidViewModel(application) {
-    val context = getApplication<Application>()
-    private val inventoryRepository = InventoryRepository(context)
 
+    private val repository = InventoryRepository(application)
 
-    private val _listInventory = MutableLiveData<MutableList<Inventory>>()
-    val listInventory: LiveData<MutableList<Inventory>> get() = _listInventory
+    private val _listInventory = MutableLiveData<List<Inventory>>()
+    val listInventory: LiveData<List<Inventory>> get() = _listInventory
 
-    private val _progresState = MutableLiveData(false)
-    val progresState: LiveData<Boolean> = _progresState
+    private val _progressState = MutableLiveData(false)
+    val progressState: LiveData<Boolean> = _progressState
+
+    val totalInventoryValue: LiveData<Double?> =
+        repository.getTotalInventoryValue().asLiveData()
 
     fun saveInventory(inventory: Inventory) {
         viewModelScope.launch {
-
-            _progresState.value = true
+            _progressState.value = true
             try {
-                inventoryRepository.saveInventory(inventory)
-                _progresState.value = false
-            } catch (e: Exception) {
-                _progresState.value = false
+                repository.insertInventory(inventory)
+            } finally {
+                _progressState.value = false
             }
         }
     }
 
     fun getListInventory() {
         viewModelScope.launch {
-            _progresState.value = true
+            _progressState.value = true
             try {
-                _listInventory.value = inventoryRepository.getListInventory()
-                _progresState.value = false
-            } catch (e: Exception) {
-                _progresState.value = false
+                _listInventory.value = repository.getAllInventory()
+            } finally {
+                _progressState.value = false
             }
-
         }
     }
 
     fun deleteInventory(inventory: Inventory) {
         viewModelScope.launch {
-            _progresState.value = true
+            _progressState.value = true
             try {
-                inventoryRepository.deleteInventory(inventory)
-                _progresState.value = false
-            } catch (e: Exception) {
-                _progresState.value = false
+                repository.deleteInventory(inventory)
+            } finally {
+                _progressState.value = false
             }
-
         }
     }
 
     fun updateInventory(inventory: Inventory) {
         viewModelScope.launch {
-            _progresState.value = true
+            _progressState.value = true
             try {
-                inventoryRepository.updateRepositoy(inventory)
-                _progresState.value = false
-            } catch (e: Exception) {
-                _progresState.value = false
+                repository.updateInventory(inventory)
+            } finally {
+                _progressState.value = false
             }
         }
     }
 
-    fun totalProducto(price: Int, quantity: Int): Double {
-        val total = price * quantity
-        return total.toDouble()
+    fun totalProducto(price: Double, quantity: Int): Double {
+        return price * quantity
     }
 }

@@ -4,33 +4,37 @@ import android.content.Context
 import com.example.inventorywidget.data.InventoryDB
 import com.example.inventorywidget.data.InventoryDao
 import com.example.inventorywidget.model.Inventory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
 
-class InventoryRepository(val context: Context){
-    private var inventoryDao:InventoryDao = InventoryDB.getDatabase(context).inventoryDao()
+/**
+ * Repository pattern para abstraer el acceso a datos.
+ * Conecta el ViewModel con la capa de Room (DAO).
+ */
+class InventoryRepository(context: Context) {
 
-    suspend fun saveInventory(inventory:Inventory){
-        withContext(Dispatchers.IO){
-            inventoryDao.saveInventory(inventory)
-        }
-    }
+    private val inventoryDao: InventoryDao = InventoryDB.getDatabase(context).inventoryDao()
 
-    suspend fun getListInventory():MutableList<Inventory>{
-        return withContext(Dispatchers.IO){
-            inventoryDao.getListInventory()
-        }
-    }
+    /** Obtiene todos los productos */
+    suspend fun getAllInventory(): List<Inventory> =
+        inventoryDao.getAllInventory()
 
-    suspend fun deleteInventory(inventory: Inventory){
-        withContext(Dispatchers.IO){
-            inventoryDao.deleteInventory(inventory)
-        }
-    }
+    /** Inserta un nuevo producto (puede lanzar excepción si el código ya existe) */
+    suspend fun insertInventory(inventory: Inventory) =
+        inventoryDao.insertInventory(inventory)
 
-    suspend fun updateRepositoy(inventory: Inventory){
-        withContext(Dispatchers.IO){
-            inventoryDao.updateInventory(inventory)
-        }
-    }
+    /** Obtiene un producto por su código */
+    suspend fun getInventoryByCode(code: Int): Inventory? =
+        inventoryDao.getInventoryByCode(code)
+
+    /** Actualiza un producto existente */
+    suspend fun updateInventory(inventory: Inventory) =
+        inventoryDao.updateInventory(inventory)
+
+    /** Elimina un producto */
+    suspend fun deleteInventory(inventory: Inventory) =
+        inventoryDao.deleteInventory(inventory)
+
+    /** (Opcional) Observa el valor total del inventario */
+    fun getTotalInventoryValue(): Flow<Double?> =
+        inventoryDao.getTotalInventoryValue()
 }
