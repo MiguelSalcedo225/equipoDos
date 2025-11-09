@@ -1,24 +1,34 @@
 package com.example.inventorywidget.data
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.example.inventorywidget.model.Inventory
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface InventoryDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveInventory(inventory: Inventory)
 
-    @Query("SELECT * FROM Inventory")
-    suspend fun getListInventory(): MutableList<Inventory>
+    /** Inserta un nuevo producto.
+     *  OnConflictStrategy.ABORT evita duplicados de código. */
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertInventory(inventory: Inventory)
 
+    /** Obtiene todos los productos. */
+    @Query("SELECT * FROM inventory ORDER BY code ASC")
+    suspend fun getAllInventory(): List<Inventory>
+
+    /** Obtiene un producto por su código. */
+    @Query("SELECT * FROM inventory WHERE code = :productCode")
+    suspend fun getInventoryByCode(productCode: Int): Inventory?
+
+    /** Actualiza un producto existente. */
+    @Update
+    suspend fun updateInventory(inventory: Inventory)
+
+    /** Elimina un producto. */
     @Delete
     suspend fun deleteInventory(inventory: Inventory)
 
-    @Update
-    suspend fun updateInventory(inventory: Inventory)
+    /** (Opcional) Calcula el valor total del inventario. */
+    @Query("SELECT SUM(price * quantity) FROM inventory")
+    fun getTotalInventoryValue(): Flow<Double?>
 }
