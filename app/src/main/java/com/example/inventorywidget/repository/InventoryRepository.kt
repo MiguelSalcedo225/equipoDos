@@ -5,6 +5,7 @@ import com.example.inventorywidget.data.InventoryDB
 import com.example.inventorywidget.data.InventoryDao
 import com.example.inventorywidget.model.Inventory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class InventoryRepository(val context: Context){
@@ -22,6 +23,10 @@ class InventoryRepository(val context: Context){
         }
     }
 
+    suspend fun getInventoryById(id: Int): Inventory? {
+        return inventoryDao.getInventoryById(id)
+    }
+
     suspend fun deleteInventory(inventory: Inventory){
         withContext(Dispatchers.IO){
             inventoryDao.deleteInventory(inventory)
@@ -32,5 +37,9 @@ class InventoryRepository(val context: Context){
         withContext(Dispatchers.IO){
             inventoryDao.updateInventory(inventory)
         }
+    }
+
+    fun getTotalInventoryPrice(): Flow<Float?> {
+        return inventoryDao.getTotalInventoryValue();
     }
 }
