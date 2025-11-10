@@ -2,18 +2,21 @@ package com.example.inventorywidget.view
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.inventorywidget.databinding.ActivityMainBinding
 import com.example.inventorywidget.R
 import com.example.inventorywidget.viewmodel.AuthenticationState
 import com.example.inventorywidget.viewmodel.LoginViewModel
 import com.example.inventorywidget.viewmodel.LoginViewModelFactory
+import com.google.android.material.appbar.MaterialToolbar
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,45 +36,56 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // --- 1. Setup NavController and Toolbar (Cleaner) ---
+
+        // You only need to set the support action bar ONCE
+        setSupportActionBar(binding.toolbar)
+
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-
         navController = navHostFragment.navController
 
+        // --- 2. This is the FIX for the "Up" (back) button ---
+        // Tell the NavController which fragments are "top-level"
+        // These will NOT show a back arrow.
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.homeFragment, R.id.loginFragment)
+            // Add any other top-level screens here
+        )
 
-        setSupportActionBar(binding.toolbar)
-        setupActionBarWithNavController(navController)
+        // Pass the configuration here
+        setupActionBarWithNavController(navController, appBarConfiguration)
 
         observeAuthenticationState()
 
-
+        // --- 3. This is the FIX for the Toolbar visibility ---
         navController.addOnDestinationChangedListener { _, destination, _ ->
 
-            // 1. Set the default UI state for most fragments
-            binding.btnLogout.visibility = View.GONE
+            // 1. Set the DEFAULT UI state for ALL fragments
             binding.toolbar.visibility = View.VISIBLE
             supportActionBar?.show()
+            binding.btnLogout.visibility = View.GONE
 
-            // 2. Handle the exceptions
+            // 2. Handle the EXCEPTIONS
             when (destination.id) {
                 R.id.homeFragment -> {
-                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                    // You no longer need this, AppBarConfiguration handles it:
+                    // supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
                     // Show logout button only on home
                     binding.btnLogout.visibility = View.VISIBLE
                     binding.btnLogout.setOnClickListener {
                         mostrarDialogoCerrarSesion()
-
                     }
                 }
                 R.id.loginFragment -> {
-                    // Hide toolbar only on login
+                    // Hide toolbar and logout button on login
                     binding.toolbar.visibility = View.GONE
                     supportActionBar?.hide()
+                    binding.btnLogout.visibility = View.GONE
                 }
             }
         }
-
-
     }
     override fun onSupportNavigateUp(): Boolean {
 
