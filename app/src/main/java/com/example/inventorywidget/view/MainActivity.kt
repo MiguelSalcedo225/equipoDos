@@ -68,6 +68,10 @@ class MainActivity : AppCompatActivity() {
                     binding.toolbar.visibility = View.GONE
                     supportActionBar?.hide()
                 }
+                else -> {
+                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                    supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+                }
             }
         }
 
