@@ -2,18 +2,21 @@ package com.example.inventorywidget.view
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.inventorywidget.databinding.ActivityMainBinding
 import com.example.inventorywidget.R
 import com.example.inventorywidget.viewmodel.AuthenticationState
 import com.example.inventorywidget.viewmodel.LoginViewModel
 import com.example.inventorywidget.viewmodel.LoginViewModelFactory
+import com.google.android.material.appbar.MaterialToolbar
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,40 +36,49 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        setSupportActionBar(binding.toolbar)
+
+
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-
         navController = navHostFragment.navController
 
 
-        setSupportActionBar(binding.toolbar)
-        setupActionBarWithNavController(navController)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.homeFragment, R.id.loginFragment)
+
+        )
+
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
 
         observeAuthenticationState()
 
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
 
-            // 1. Set the default UI state for most fragments
-            binding.btnLogout.visibility = View.GONE
+
             binding.toolbar.visibility = View.VISIBLE
             supportActionBar?.show()
+            binding.btnLogout.visibility = View.GONE
 
-            // 2. Handle the exceptions
+            // 2. Handle the EXCEPTIONS
             when (destination.id) {
                 R.id.homeFragment -> {
-                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
+
                     // Show logout button only on home
                     binding.btnLogout.visibility = View.VISIBLE
                     binding.btnLogout.setOnClickListener {
                         mostrarDialogoCerrarSesion()
-
                     }
                 }
                 R.id.loginFragment -> {
-                    // Hide toolbar only on login
+                    // Hide toolbar and logout button on login
                     binding.toolbar.visibility = View.GONE
                     supportActionBar?.hide()
+                    binding.btnLogout.visibility = View.GONE
                 }
                 else -> {
                     supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -74,8 +86,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-
     }
     override fun onSupportNavigateUp(): Boolean {
 

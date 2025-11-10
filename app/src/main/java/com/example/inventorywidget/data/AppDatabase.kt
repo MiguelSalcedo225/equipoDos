@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.inventorywidget.model.Product
-import com.example.inventorywidget.utils.Constants.NAME_BD
+
 
 /**
  * Base de datos principal de la aplicación usando Room.

@@ -35,18 +35,18 @@
             app:destination="@id/addItemFragment" />
         <action
             android:id="@+id/action_homeFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/itemDetailsFragment" />
     </fragment>
 
 
     <fragment
         android:id="@+id/addItemFragment"
         android:name="com.example.inventorywidget.view.fragment.AddProductFragment"
-        android:label="Agregar producto"
+        android:label="Agregar Producto"
         tools:layout="@layout/fragment_add_item" />
 
     <fragment
-        android:id="@+id/detailFragment"
+        android:id="@+id/itemDetailsFragment"
         android:name="com.example.inventorywidget.view.fragment.ItemDetailsFragment"
         android:label="Detalle del Producto"
         tools:layout="@layout/fragment_item_details" >
@@ -54,14 +54,14 @@
             android:name="productCode"
             app:argType="integer" />
         <action
-            android:id="@+id/action_detailFragment_to_editFragment"
-            app:destination="@id/editFragment" />
+            android:id="@+id/action_itemDetailsFragment_to_itemEditFragment"
+            app:destination="@id/itemEditFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/editFragment"
+        android:id="@+id/itemEditFragment"
         android:name="com.example.inventorywidget.view.fragment.ItemEditFragment"
-        android:label="fragment_item_edit"
+        android:label="Editar Producto"
         tools:layout="@layout/fragment_item_edit" >
         <action
             android:id="@+id/action_itemEditFragment_to_homeInventoryFragment"

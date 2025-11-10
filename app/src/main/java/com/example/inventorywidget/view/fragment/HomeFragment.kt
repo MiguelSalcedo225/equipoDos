@@ -45,8 +45,11 @@ class HomeFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = ProductAdapter { product ->
             // Navegar al detalle del producto al hacer clic
-            val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(product.code)
-            findNavController().navigate(action)
+            val navController = findNavController()
+            if (navController.currentDestination?.id == R.id.homeFragment) {
+                val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(product.code)
+                navController.navigate(action)
+            }
         }
 
         binding.recyclerView.apply {
@@ -77,10 +80,10 @@ class HomeFragment : Fragment() {
         }
 
         // Observar el saldo total
-        viewModel.totalInventoryValue.observe(viewLifecycleOwner) { total ->
-            val formattedTotal = formatCurrency(total ?: 0.0)
-            binding.tvTotalValue.text = "Saldo Total: $formattedTotal"
-        }
+//        viewModel.totalInventoryValue.observe(viewLifecycleOwner) { total ->
+//            val formattedTotal = formatCurrency(total ?: 0.0)
+//            binding.tvTotalValue.text = "Saldo Total: $formattedTotal"
+//        }
     }
 
 
