@@ -80,6 +80,10 @@ class MainActivity : AppCompatActivity() {
                     supportActionBar?.hide()
                     binding.btnLogout.visibility = View.GONE
                 }
+                else -> {
+                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                    supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+                }
             }
         }
     }

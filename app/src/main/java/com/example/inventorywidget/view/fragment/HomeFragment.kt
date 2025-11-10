@@ -62,17 +62,20 @@ class HomeFragment : Fragment() {
      * Configura los observadores del ViewModel
      */
     private fun setupObservers() {
+        // Observar el estado de carga
+        viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
+            binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
+        }
+
         // Observar la lista de productos
         viewModel.allProducts.observe(viewLifecycleOwner) { products ->
-            adapter.submitList(products)
-
-            // Mostrar mensaje si no hay productos
             if (products.isEmpty()) {
                 binding.tvEmptyState.visibility = View.VISIBLE
                 binding.recyclerView.visibility = View.GONE
             } else {
                 binding.tvEmptyState.visibility = View.GONE
                 binding.recyclerView.visibility = View.VISIBLE
+                adapter.submitList(products)
             }
         }
 

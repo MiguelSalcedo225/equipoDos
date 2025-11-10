@@ -1,23 +1,40 @@
 package com.example.inventorywidget.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import com.example.inventorywidget.repository.ProductRepository
 import com.example.inventorywidget.model.Product
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 
-/**
- * ViewModel para la pantalla Home (lista de productos)
- * Observa la lista de productos y el saldo total del inventario
- */
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = ProductRepository(application)
 
-    /** Lista de todos los productos como LiveData (actualización en tiempo real) */
-    val allProducts: LiveData<List<Product>> = repository.allProducts.asLiveData()
+    /** Estado de carga */
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
-    /** Valor total del inventario (observa cambios automáticamente) */
+    /** Lista de productos */
+    private val _allProducts = MutableLiveData<List<Product>>()
+    val allProducts: LiveData<List<Product>> get() = _allProducts
+
+    /** Valor total del inventario */
     val totalInventoryValue: LiveData<Double?> = repository.totalInventoryValue.asLiveData()
+
+    init {
+        loadProducts()
+    }
+    private fun loadProducts() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            // Simular tiempo de carga
+            delay(2000)
+            repository.allProducts.collect { productList ->
+                _allProducts.value = productList
+                _isLoading.value = false
+            }
+        }
+    }
 }
