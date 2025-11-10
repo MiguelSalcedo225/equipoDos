@@ -50,7 +50,7 @@ class ItemEditFragment : Fragment() {
 
     private fun updateInventory(){
         val name = binding.etName.text.toString()
-        val price = binding.etPrice.text.toString().toInt()
+        val price = binding.etPrice.text.toString().toFloat()
         val quantity = binding.etQuantity.text.toString().toInt()
         val inventory = Inventory(receivedInventory.id, name,price,quantity)
         inventoryViewModel.updateInventory(inventory)

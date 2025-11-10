@@ -43,7 +43,7 @@ class AddItemFragment : Fragment() {
 
     private fun saveInvetory(){
         val name = binding.etName.text.toString()
-        val price = binding.etPrice.text.toString().toInt()
+        val price = binding.etPrice.text.toString().toFloat()
         val quantity = binding.etQuantity.text.toString().toInt()
         val inventory = Inventory(name = name, price = price, quantity = quantity)
         inventoryViewModel.saveInventory(inventory)

@@ -41,11 +41,16 @@
         android:name="com.example.inventorywidget.view.fragment.AddItemFragment"
         android:label="fragment_add_item"
         tools:layout="@layout/fragment_add_item" />
+
+
     <fragment
         android:id="@+id/itemDetailsFragment"
         android:name="com.example.inventorywidget.view.fragment.ItemDetailsFragment"
         android:label="fragment_item_details"
         tools:layout="@layout/fragment_item_details" >
+        <argument
+            android:name="Id"
+            app:argType="integer" />
         <action
             android:id="@+id/action_itemDetailsFragment_to_itemEditFragment"
             app:destination="@id/itemEditFragment" />
@@ -56,6 +61,9 @@
         android:name="com.example.inventorywidget.view.fragment.ItemEditFragment"
         android:label="fragment_item_edit"
         tools:layout="@layout/fragment_item_edit" >
+        <argument
+            android:name="Id"
+            app:argType="integer" />
         <action
             android:id="@+id/action_itemEditFragment_to_homeInventoryFragment"
             app:destination="@id/homeFragment"

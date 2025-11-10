@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.inventorywidget.model.Inventory
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface InventoryDao {
@@ -21,4 +22,10 @@ interface InventoryDao {
 
     @Update
     suspend fun updateInventory(inventory: Inventory)
+
+    @Query("SELECT SUM(price * quantity) FROM inventory")
+    fun getTotalInventoryValue(): Flow<Float?>
+
+    @Query("SELECT * FROM inventory WHERE id = :inventoryId")
+    suspend fun getInventoryById(inventoryId: Int): Inventory?
 }
