@@ -2,6 +2,7 @@
     <string name="app_name">InventoryWidget</string>
     <string name="tituloInventario">Inventario</string>
     <string name="inventory_icon_description">Ícono de inventario</string>
+    <string name="widget_description">Widget de Inventory para ver el saldo total del inventario</string>
 
 
 </resources>
