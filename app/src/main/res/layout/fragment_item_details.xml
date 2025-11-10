@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/backgroundColor"
+        android:background="@color/dark_background"
         android:padding="20dp"
         tools:context=".view.fragment.AddItemFragment">
 
@@ -50,24 +50,26 @@
                 android:padding="10dp">
 
                 <TextView
-                    android:id="@+id/tvItem"
+                    android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Item:"
+                    android:text="Item"
                     android:padding="5dp"
                     android:textSize="16sp"
                     android:textStyle="bold"
+                    android:textColor="@color/black"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
-                    android:id="@+id/tvName"
+                    android:id="@+id/tvPriceByUnit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Precio Unidad :"
                     android:padding="5dp"
                     android:textSize="16sp"
-                    app:layout_constraintTop_toBottomOf="@+id/tvItem"
+                    android:textColor="@color/black"
+                    app:layout_constraintTop_toBottomOf="@+id/tvName"
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
@@ -76,11 +78,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:padding="5dp"
-                    android:text="$15.000"
+                    android:text="$0.000"
                     android:textSize="16sp"
-                    android:textStyle="bold"
+                    android:textColor="@color/primary_orange"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvItem" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
                 <TextView
                     android:id="@+id/tvQuantityAvailible"
@@ -89,19 +91,20 @@
                     android:text="Cantidad Disponible:"
                     android:padding="5dp"
                     android:textSize="16sp"
-                    app:layout_constraintTop_toBottomOf="@+id/tvName"
+                    android:textColor="@color/black"
+                    app:layout_constraintTop_toBottomOf="@+id/tvPriceByUnit"
                     app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
                     android:id="@+id/tvQuantity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="$5"
+                    android:text="0"
                     android:padding="5dp"
                     android:textSize="16sp"
                     android:layout_marginEnd="8dp"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@+id/tvPrice"
+                    android:textColor="@color/black"
+                    app:layout_constraintTop_toBottomOf="@+id/tvPriceByUnit"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
                 <TextView
@@ -111,6 +114,8 @@
                     android:text="Total:"
                     android:padding="5dp"
                     android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                     app:layout_constraintTop_toBottomOf="@+id/tvQuantityAvailible"
                     app:layout_constraintStart_toStartOf="parent"/>
 
@@ -123,7 +128,9 @@
                     android:textSize="16sp"
                     android:layout_marginEnd="8dp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@+id/tvQuantity"
+                    android:textColor="@color/primary_orange"
+
+                    app:layout_constraintTop_toBottomOf="@+id/tvQuantityAvailible"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
 
@@ -149,9 +156,13 @@
             android:layout_height="0dp"
             android:contentDescription="button add"
             android:layout_marginRight="16dp"
-            android:backgroundTint="@color/backgroudColorBtn"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_edit"
+            android:src="@drawable/ic_edit_black"
+
+            app:backgroundTint="@color/primary_orange"
+
+            app:tint="@android:color/black"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
