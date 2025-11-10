@@ -77,10 +77,10 @@ class HomeFragment : Fragment() {
         }
 
         // Observar el saldo total
-        viewModel.totalInventoryValue.observe(viewLifecycleOwner) { total ->
-            val formattedTotal = formatCurrency(total ?: 0.0)
-            binding.tvTotalValue.text = "Saldo Total: $formattedTotal"
-        }
+//        viewModel.totalInventoryValue.observe(viewLifecycleOwner) { total ->
+//            val formattedTotal = formatCurrency(total ?: 0.0)
+//            binding.tvTotalValue.text = "Saldo Total: $formattedTotal"
+//        }
     }
 
 

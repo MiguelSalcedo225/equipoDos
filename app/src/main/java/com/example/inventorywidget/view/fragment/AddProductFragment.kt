@@ -36,9 +36,7 @@ class AddProductFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupValidation()
         setupListeners()
-        binding.toolbarAddItem.setNavigationOnClickListener {
-            findNavController().popBackStack()
-        }
+
     }
 
     private fun setupListeners() {

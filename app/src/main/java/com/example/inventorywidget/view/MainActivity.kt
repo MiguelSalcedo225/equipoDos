@@ -36,32 +36,29 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // --- 1. Setup NavController and Toolbar (Cleaner) ---
 
-        // You only need to set the support action bar ONCE
         setSupportActionBar(binding.toolbar)
+
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        // --- 2. This is the FIX for the "Up" (back) button ---
-        // Tell the NavController which fragments are "top-level"
-        // These will NOT show a back arrow.
+
         val appBarConfiguration = AppBarConfiguration(
             setOf(R.id.homeFragment, R.id.loginFragment)
-            // Add any other top-level screens here
+
         )
 
-        // Pass the configuration here
+
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         observeAuthenticationState()
 
-        // --- 3. This is the FIX for the Toolbar visibility ---
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
 
-            // 1. Set the DEFAULT UI state for ALL fragments
+
             binding.toolbar.visibility = View.VISIBLE
             supportActionBar?.show()
             binding.btnLogout.visibility = View.GONE
@@ -69,8 +66,7 @@ class MainActivity : AppCompatActivity() {
             // 2. Handle the EXCEPTIONS
             when (destination.id) {
                 R.id.homeFragment -> {
-                    // You no longer need this, AppBarConfiguration handles it:
-                    // supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
 
                     // Show logout button only on home
                     binding.btnLogout.visibility = View.VISIBLE

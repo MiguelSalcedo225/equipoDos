@@ -7,16 +7,7 @@
         android:layout_height="match_parent"
         android:background="#CC000000">
 
-        <!-- Toolbar gris con título blanco y flecha atrás -->
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar_add_item"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#424242"
-            app:title="Agregar producto"
-            app:titleTextColor="@color/white"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:navigationIconTint="@color/white" />
+
 
         <!-- Contenido principal -->
         <ScrollView

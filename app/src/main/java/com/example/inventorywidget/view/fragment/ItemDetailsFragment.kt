@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.inventorywidget.R
@@ -94,8 +95,17 @@ class ItemDetailsFragment : Fragment() {
 
         binding.btnDelete.setOnClickListener {
             val Id = args.productCode
-            viewModel.deleteProduct(Id)
-            findNavController().navigateUp()
+            AlertDialog.Builder(requireContext())
+                .setTitle("Eliminar Producto")
+                .setMessage("¿Estás seguro de que deseas Eliminar el Producto?")
+                .setPositiveButton("Sí") { _, _ ->
+                    viewModel.deleteProduct(Id)
+                    findNavController().navigateUp()
+                }
+                .setNegativeButton("Cancelar", null)
+                .show()
+
+
         }
 
         binding.fbEdit.setOnClickListener {
@@ -117,6 +127,8 @@ class ItemDetailsFragment : Fragment() {
         }
 
     }
+
+
 
     /**
      * Formatea un número como moneda

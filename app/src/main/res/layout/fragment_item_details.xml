@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
-            android:backgroundTint="@color/backgroundColorItem"
+            android:backgroundTint="@color/white"
             app:cardCornerRadius="10dp"
             android:elevation="8dp"
             app:layout_constraintStart_toStartOf="parent"
