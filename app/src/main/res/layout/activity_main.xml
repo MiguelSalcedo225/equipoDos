@@ -4,7 +4,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
 
         <!-- Barra superior Material con fondo gris según especificaciones -->
         <com.google.android.material.appbar.MaterialToolbar
