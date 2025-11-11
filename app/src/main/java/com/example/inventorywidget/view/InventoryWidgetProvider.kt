@@ -114,7 +114,7 @@ class InventoryWidgetProvider : AppWidgetProvider() {
             val balanceText = if (isBalanceVisible) {
                 widgetViewModel.formatBalance(totalBalance)
             } else {
-                widgetViewModel.getHiddenBalance()
+                widgetViewModel.getHiddenBalance(totalBalance)
             }
             views.setTextViewText(R.id.widget_balance, balanceText)
 
