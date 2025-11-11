@@ -54,9 +54,6 @@ class ItemEditFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        binding.toolbarEdit.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
 
         binding.etName.addTextChangedListener { validateFields() }
         binding.etPrice.addTextChangedListener { validateFields() }
