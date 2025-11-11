@@ -13,62 +13,134 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/backgroundColor"
+        android:background="@color/dark_background"
         android:padding="20dp"
-        tools:context=".view.fragment.AddItemFragment">
+        tools:context=".view.fragment.AddProductFragment">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarEdit"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginTop="2dp"
+            android:background="@color/toolbar_gray"
+            android:titleTextColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_arrow_back" />
 
         <TextView
             android:id="@+id/tvNameEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Editar Artículo"
-            android:textSize="25sp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="12dp"
+            android:paddingStart="8dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="8dp"
+            android:text="Editar Producto"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.143"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/etId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Id: "
+            android:background="@drawable/bg_redondo"
+            android:padding="12dp"
+            android:enabled="false"
+            android:textColor="@android:color/white"
+            android:inputType="text"
+            app:layout_constraintTop_toBottomOf="@id/toolbarEdit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvNombreLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="36dp"
+            android:text="Nombre artículo"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etId" />
 
         <EditText
             android:id="@+id/etName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="4dp"
             android:layout_gravity="center"
-            android:hint="Nombre artículo"
             android:background="@drawable/bg_redondo"
-            android:padding="12dp"
+            android:hint=""
             android:inputType="text"
-            android:maxLength="10"
-            app:layout_constraintTop_toBottomOf="@id/tvNameEdit"
+            android:maxLength="40"
+            android:padding="12dp"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/tvNombreLabel" />
+
+        <!-- Precio -->
+
+        <TextView
+            android:id="@+id/tvPrecioLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp"
+            android:text="Precio"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etName" />
 
         <EditText
             android:id="@+id/etPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_gravity="center"
-            android:hint="Precio"
+            android:layout_marginTop="4dp"
             android:background="@drawable/bg_redondo"
             android:padding="12dp"
             android:inputType="number"
-            app:layout_constraintTop_toBottomOf="@id/etName"
+            android:textColor="@android:color/white"
+            app:layout_constraintTop_toBottomOf="@id/tvPrecioLabel"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Cantidad -->
+
+        <TextView
+            android:id="@+id/tvCantidadLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp"
+            android:text="Cantidad"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etPrice" />
 
         <EditText
             android:id="@+id/etQuantity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_gravity="center"
-            android:hint="Cantidad"
+            android:layout_marginTop="4dp"
             android:background="@drawable/bg_redondo"
             android:padding="12dp"
             android:inputType="number"
-            app:layout_constraintTop_toBottomOf="@id/etPrice"
+            android:textColor="@android:color/white"
+            app:layout_constraintTop_toBottomOf="@id/tvCantidadLabel"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
             android:id="@+id/btnEdit"
@@ -76,6 +148,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:text="Editar"
+            android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@+id/etQuantity"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
