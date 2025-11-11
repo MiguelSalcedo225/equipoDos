@@ -3,30 +3,56 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/loginFragment">
+<!--global login action-->
+    <action
+        android:id="@+id/action_global_to_loginFragment"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
 
+    <!-- Login Fragment -->
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.inventorywidget.view.fragment.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <!-- Home Fragment -->
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.inventorywidget.view.fragment.HomeInventoryFragment"
+        android:name="com.example.inventorywidget.view.fragment.HomeFragment"
         android:label="Inventario"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_homeInventoryFragment_to_addItemFragment"
+            android:id="@+id/action_homeFragment_to_addProductFragment"
             app:destination="@id/addItemFragment" />
         <action
-            android:id="@+id/action_homeInventoryFragment_to_itemDetailsFragment"
+            android:id="@+id/action_homeFragment_to_detailFragment"
             app:destination="@id/itemDetailsFragment" />
     </fragment>
+
+
     <fragment
         android:id="@+id/addItemFragment"
-        android:name="com.example.inventorywidget.view.fragment.AddItemFragment"
-        android:label="fragment_add_item"
+        android:name="com.example.inventorywidget.view.fragment.AddProductFragment"
+        android:label="Agregar Producto"
         tools:layout="@layout/fragment_add_item" />
+
     <fragment
         android:id="@+id/itemDetailsFragment"
         android:name="com.example.inventorywidget.view.fragment.ItemDetailsFragment"
-        android:label="fragment_item_details"
+        android:label="Detalle del Producto"
         tools:layout="@layout/fragment_item_details" >
+        <argument
+            android:name="productCode"
+            app:argType="integer" />
         <action
             android:id="@+id/action_itemDetailsFragment_to_itemEditFragment"
             app:destination="@id/itemEditFragment" />
@@ -35,7 +61,7 @@
     <fragment
         android:id="@+id/itemEditFragment"
         android:name="com.example.inventorywidget.view.fragment.ItemEditFragment"
-        android:label="fragment_item_edit"
+        android:label="Editar Producto"
         tools:layout="@layout/fragment_item_edit" >
         <action
             android:id="@+id/action_itemEditFragment_to_homeInventoryFragment"

@@ -11,14 +11,14 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.inventorywidget.R
 import com.example.inventorywidget.databinding.FragmentItemEditBinding
-import com.example.inventorywidget.model.Inventory
+import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.viewmodel.InventoryViewModel
 
 class ItemEditFragment : Fragment() {
 
     private lateinit var binding: FragmentItemEditBinding
     private val inventoryViewModel: InventoryViewModel by viewModels()
-    private lateinit var receivedInventory: Inventory
+    private lateinit var receivedProduct: Product
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,18 +36,18 @@ class ItemEditFragment : Fragment() {
     }
 
     private fun setupData() {
-        receivedInventory = requireArguments().getSerializable("clave") as Inventory
+        receivedProduct = requireArguments().getSerializable("clave") as Product
 
-        binding.etId.setText(getString(R.string.inventory_id, receivedInventory.id))
-        binding.etName.setText(receivedInventory.name)
-        binding.etPrice.setText(receivedInventory.price.toString())
-        binding.etQuantity.setText(receivedInventory.quantity.toString())
+        // Usar code y unitPrice según Product.kt
+        binding.etId.setText(getString(R.string.inventory_id, receivedProduct.code))
+        binding.etName.setText(receivedProduct.name)
+        binding.etPrice.setText(receivedProduct.unitPrice.toString())
+        binding.etQuantity.setText(receivedProduct.quantity.toString())
 
         validateFields()
     }
 
     private fun setupListeners() {
-
         binding.toolbarEdit.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -57,7 +57,7 @@ class ItemEditFragment : Fragment() {
         binding.etQuantity.addTextChangedListener { validateFields() }
 
         binding.btnEdit.setOnClickListener {
-            updateInventory()
+            updateProduct()
         }
     }
 
@@ -66,15 +66,13 @@ class ItemEditFragment : Fragment() {
         val price = binding.etPrice.text.toString().trim()
         val quantity = binding.etQuantity.text.toString().trim()
 
-        val valid = name.isNotEmpty() && price.isNotEmpty() && quantity.isNotEmpty()
-        binding.btnEdit.isEnabled = valid
+        binding.btnEdit.isEnabled = name.isNotEmpty() && price.isNotEmpty() && quantity.isNotEmpty()
     }
 
-    private fun updateInventory() {
+    private fun updateProduct() {
         val name = binding.etName.text.toString().trim()
         val priceStr = binding.etPrice.text.toString().trim()
         val quantityStr = binding.etQuantity.text.toString().trim()
-
 
         if (name.length > 40) {
             Toast.makeText(requireContext(), "El nombre no puede superar 40 caracteres", Toast.LENGTH_SHORT).show()
@@ -82,7 +80,7 @@ class ItemEditFragment : Fragment() {
         }
 
         try {
-            val price = priceStr.toInt()
+            val price = priceStr.toDouble() // unitPrice es Double
             val quantity = quantityStr.toInt()
 
             if (priceStr.length > 20 || quantityStr.length > 4) {
@@ -90,14 +88,14 @@ class ItemEditFragment : Fragment() {
                 return
             }
 
-            val updatedInventory = Inventory(
-                id = receivedInventory.id,
+            val updatedProduct = Product(
+                code = receivedProduct.code,
                 name = name,
-                price = price,
+                unitPrice = price,
                 quantity = quantity
             )
 
-            inventoryViewModel.updateInventory(updatedInventory)
+            inventoryViewModel.updateInventory(updatedProduct)
             Toast.makeText(requireContext(), "Producto actualizado correctamente", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_itemEditFragment_to_homeInventoryFragment)
 
@@ -106,3 +104,4 @@ class ItemEditFragment : Fragment() {
         }
     }
 }
+
