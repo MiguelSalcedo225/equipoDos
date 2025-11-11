@@ -38,7 +38,7 @@
             android:paddingStart="8dp"
             android:paddingTop="10dp"
             android:paddingEnd="8dp"
-            android:text="Editar Producto"
+            android:text="@string/editar_producto"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.143"
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="36dp"
-            android:text="Nombre artículo"
+            android:text="@string/nombre_articulo"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -79,7 +79,6 @@
             android:layout_marginTop="4dp"
             android:layout_gravity="center"
             android:background="@drawable/bg_redondo"
-            android:hint=""
             android:inputType="text"
             android:maxLength="40"
             android:padding="12dp"
@@ -88,15 +87,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvNombreLabel" />
 
-        <!-- Precio -->
-
         <TextView
             android:id="@+id/tvPrecioLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="24dp"
-            android:text="Precio"
+            android:text="@string/precio"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -110,12 +107,11 @@
             android:background="@drawable/bg_redondo"
             android:padding="12dp"
             android:inputType="number"
+            android:maxLength="20"
             android:textColor="@android:color/white"
             app:layout_constraintTop_toBottomOf="@id/tvPrecioLabel"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Cantidad -->
 
         <TextView
             android:id="@+id/tvCantidadLabel"
@@ -123,7 +119,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="24dp"
-            android:text="Cantidad"
+            android:text="@string/cantidad"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -137,6 +133,7 @@
             android:background="@drawable/bg_redondo"
             android:padding="12dp"
             android:inputType="number"
+            android:maxLength="4"
             android:textColor="@android:color/white"
             app:layout_constraintTop_toBottomOf="@id/tvCantidadLabel"
             app:layout_constraintStart_toStartOf="parent"
@@ -147,7 +144,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="Editar"
+            android:text="@string/editar"
             android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@+id/etQuantity"
             app:layout_constraintStart_toStartOf="parent"

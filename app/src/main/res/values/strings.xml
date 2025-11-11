@@ -4,5 +4,10 @@
     <string name="inventory_icon_description">Ícono de inventario</string>
     <string name="widget_description">Widget de Inventory para ver el saldo total del inventario</string>
     <string name="inventory_id">Id: %1$d</string>
+    <string name="editar_producto">Editar Producto</string>
+    <string name="nombre_articulo">Nombre artículo</string>
+    <string name="precio">Precio</string>
+    <string name="cantidad">Cantidad</string>
+    <string name="editar">Editar</string>
 
 </resources>

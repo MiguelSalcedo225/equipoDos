@@ -36,15 +36,21 @@ class ItemEditFragment : Fragment() {
     }
 
     private fun setupData() {
-        receivedProduct = requireArguments().getSerializable("clave") as Product
+        val arg = requireArguments().getSerializable("dataInventory")
 
-        // Usar code y unitPrice según Product.kt
-        binding.etId.setText(getString(R.string.inventory_id, receivedProduct.code))
-        binding.etName.setText(receivedProduct.name)
-        binding.etPrice.setText(receivedProduct.unitPrice.toString())
-        binding.etQuantity.setText(receivedProduct.quantity.toString())
+        if (arg is Product) {
+            receivedProduct = arg
 
-        validateFields()
+            binding.etId.setText(getString(R.string.inventory_id, receivedProduct.code))
+            binding.etName.setText(receivedProduct.name)
+            binding.etPrice.setText(receivedProduct.unitPrice.toString())
+            binding.etQuantity.setText(receivedProduct.quantity.toString())
+
+            validateFields()
+        } else {
+            Toast.makeText(requireContext(), "No se pudo cargar el producto", Toast.LENGTH_SHORT).show()
+            findNavController().navigateUp()
+        }
     }
 
     private fun setupListeners() {
