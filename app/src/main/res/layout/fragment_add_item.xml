@@ -55,7 +55,6 @@
                     android:hint="Nombre artículo"
                     android:textColorHint="@color/white"
                     app:boxStrokeColor="@color/white"
-                    app:counterEnabled="true"
                     app:counterMaxLength="40"
                     app:hintTextColor="@color/white"
                     app:layout_constraintTop_toBottomOf="@id/til_code"
