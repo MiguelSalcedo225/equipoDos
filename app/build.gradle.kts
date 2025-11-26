@@ -76,6 +76,15 @@ dependencies {
     implementation("androidx.room:room-ktx:2.8.3")
     implementation ("com.getbase:floatingactionbutton:1.10.1")
 
+    // SharedPreferences
+    implementation("androidx.preference:preference-ktx:1.2.1")
+
+    // Biometría
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+
+    // Lottie (animación huella digital)
+    implementation("com.airbnb.android:lottie:6.4.0")
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

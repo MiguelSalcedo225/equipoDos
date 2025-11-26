@@ -4,7 +4,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
 
         <!-- Barra superior Material con fondo gris según especificaciones -->
         <com.google.android.material.appbar.MaterialToolbar
@@ -13,9 +15,13 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/toolbar_gray"
             app:titleTextColor="@color/white"
+            app:navigationIcon="@drawable/ic_arrow_back"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+
+            >
+
             <ImageButton
                 android:id="@+id/btn_logout"
                 android:layout_width="wrap_content"
