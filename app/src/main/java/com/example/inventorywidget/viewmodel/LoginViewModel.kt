@@ -17,7 +17,7 @@ class LoginViewModel : ViewModel() {
 
     fun login(email: String, password: String) {
         if (email.isEmpty() || password.isEmpty()) {
-            _loginState.value = Resource.Error("Email and password cannot be empty")
+            _loginState.value = Resource.Error("Email and password are required")
             return
         }
 
@@ -28,4 +28,19 @@ class LoginViewModel : ViewModel() {
             _loginState.value = result
         }
     }
+
+    fun logout(){
+        viewModelScope.launch {
+            repository.logout()
+
+        }
+
+
+    }
+
+    fun verifyUserIsLoggedIn(): Boolean {
+        return repository.currentUser != null
+
+    }
+
 }

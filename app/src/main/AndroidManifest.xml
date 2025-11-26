@@ -11,15 +11,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.InventoryWidget">
+
+        <!-- LoginActivity - First screen (Launcher) -->
         <activity
-            android:name=".view.MainActivity"
+            android:name="com.example.inventorywidget.view.LoginActivity"
+            android:label="Login"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <!-- MainActivity - Hosts all fragments -->
+        <activity
+            android:name="com.example.inventorywidget.view.MainActivity"
+            android:label="Inventory"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.inventorywidget.view.RegisterActivity"
+            android:exported="false"/>
 
         <!-- Widget Provider -->
         <receiver
