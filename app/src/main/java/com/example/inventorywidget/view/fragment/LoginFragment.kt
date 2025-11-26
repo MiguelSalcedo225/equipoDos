@@ -15,7 +15,6 @@ import com.example.inventorywidget.R
 import com.example.inventorywidget.databinding.FragmentLoginBinding
 import com.example.inventorywidget.viewmodel.AuthenticationState
 import com.example.inventorywidget.viewmodel.LoginViewModel
-import com.example.inventorywidget.viewmodel.LoginViewModelFactory
 import java.util.concurrent.Executor
 
 /**
