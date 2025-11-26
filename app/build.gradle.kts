@@ -61,6 +61,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.1")
     //corrutinas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
     //viewmodel
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
@@ -76,6 +77,7 @@ dependencies {
     implementation("androidx.room:room-ktx:2.8.3")
     implementation ("com.getbase:floatingactionbutton:1.10.1")
 
+
     // SharedPreferences
     implementation("androidx.preference:preference-ktx:1.2.1")
 
@@ -84,6 +86,11 @@ dependencies {
 
     // Lottie (animación huella digital)
     implementation("com.airbnb.android:lottie:6.4.0")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
