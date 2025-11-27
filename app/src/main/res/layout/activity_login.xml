@@ -13,7 +13,7 @@
         android:layout_height="120dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
-        android:src="@drawable/ic_app_logo"
+        android:src="@mipmap/ic_launcher"
         android:contentDescription="App Logo"/>
 
     <!-- Email Field -->
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/logoImageView"
         android:layout_marginTop="60dp"
-        app:boxStrokeColor="@color/white"
+        app:boxStrokeColor="@color/text_input_box_stroke"
         app:boxStrokeWidth="1dp"
         app:boxStrokeWidthFocused="2dp"
         app:hintTextColor="@color/white"
