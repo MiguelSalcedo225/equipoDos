@@ -15,8 +15,8 @@ class RegisterViewModel : ViewModel() {
     private val _registerState = MutableLiveData<Resource<User>>()
     val registerState: LiveData<Resource<User>> = _registerState
 
-    fun register(email: String, password: String, displayName: String) {
-        if (email.isEmpty() || password.isEmpty() || displayName.isEmpty()) {
+    fun register(email: String, password: String) {
+        if (email.isEmpty() || password.isEmpty()) {
             _registerState.value = Resource.Error("Todos los campos son requeridos")
             return
         }
@@ -29,7 +29,7 @@ class RegisterViewModel : ViewModel() {
         _registerState.value = Resource.Loading()
 
         viewModelScope.launch {
-            val result = repository.register(email, password, displayName)
+            val result = repository.register(email, password)
             _registerState.value = result
         }
     }

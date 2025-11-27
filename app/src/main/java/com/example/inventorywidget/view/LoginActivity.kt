@@ -11,16 +11,17 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.example.inventorywidget.view.MainActivity
 import com.example.inventorywidget.R
 import com.example.inventorywidget.databinding.ActivityLoginBinding
-import com.example.inventorywidget.view.RegisterActivity
 import com.example.inventorywidget.utils.Resource
 import com.example.inventorywidget.viewmodel.LoginViewModel
+import com.example.inventorywidget.viewmodel.RegisterViewModel
 
 class LoginActivity : AppCompatActivity() {
 
     private val viewModel: LoginViewModel by viewModels()
+
+    private val RViewModel: RegisterViewModel by viewModels()
     private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,6 +119,23 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+
+        RViewModel.registerState.observe(this) { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    showLoading(true)
+                }
+                is Resource.Success -> {
+                    showLoading(false)
+                    Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
+                    navigateToMain()
+                }
+                is Resource.Error -> {
+                    showLoading(false)
+                    Toast.makeText(this, result.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     private fun setupListeners() {
@@ -129,7 +147,9 @@ class LoginActivity : AppCompatActivity() {
 
         binding.registerTextView.setOnClickListener {
             if (binding.registerTextView.isEnabled) {
-                startActivity(Intent(this, RegisterActivity::class.java))
+                val email = binding.emailEditText.text.toString().trim()
+                val password = binding.passwordEditText.text.toString().trim()
+                RViewModel.register(email, password)
             }
         }
     }

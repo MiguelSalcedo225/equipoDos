@@ -21,8 +21,8 @@ class AuthRepository {
                 Resource.Success(
                     User(
                         uid = user.uid,
-                        email = user.email ?: "",
-                        displayName = user.displayName
+                        email = user.email ?: ""
+
                     )
                 )
             } else {
@@ -35,32 +35,28 @@ class AuthRepository {
 
     suspend fun register(
         email: String,
-        password: String,
-        displayName: String
+        password: String
+
     ): Resource<User> {
         return try {
             val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             val user = result.user
 
             if (user != null) {
-                // Update profile with display name
-                val profileUpdates = UserProfileChangeRequest.Builder()
-                    .setDisplayName(displayName)
-                    .build()
-                user.updateProfile(profileUpdates).await()
+
 
                 Resource.Success(
                     User(
                         uid = user.uid,
-                        email = user.email ?: "",
-                        displayName = displayName
+                        email = user.email ?: ""
+
                     )
                 )
             } else {
-                Resource.Error("Registration failed")
+                Resource.Error("Error en el registro")
             }
         } catch (e: Exception) {
-            Resource.Error(e.message ?: "An error occurred")
+            Resource.Error("Error en el registro")
         }
     }
 

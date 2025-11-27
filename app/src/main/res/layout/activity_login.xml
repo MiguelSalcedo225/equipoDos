@@ -100,7 +100,7 @@
         android:textStyle="bold"
         android:clickable="true"
         android:focusable="true"
-        android:enabled="true"/>
+        android:enabled="false"/>
 
     <!-- Progress Bar -->
     <ProgressBar

@@ -121,7 +121,7 @@ class RegisterActivity : AppCompatActivity() {
             val name = binding.nameEditText.text.toString().trim()
             val email = binding.emailEditText.text.toString().trim()
             val password = binding.passwordEditText.text.toString().trim()
-            viewModel.register(email, password, name)
+            viewModel.register(email, password)
         }
 
         binding.loginTextView.setOnClickListener {
