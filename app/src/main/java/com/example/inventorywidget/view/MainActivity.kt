@@ -78,12 +78,7 @@ class MainActivity : AppCompatActivity() {
                         mostrarDialogoCerrarSesion()
                     }
                 }
-//                R.id.loginFragment -> {
-//                    // Hide toolbar and logout button on login
-//                    binding.toolbar.visibility = View.GONE
-//                    supportActionBar?.hide()
-//                    binding.btnLogout.visibility = View.GONE
-//                }
+
                 else -> {
                     supportActionBar?.setDisplayHomeAsUpEnabled(true)
                     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
@@ -108,25 +103,6 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-
-//    private fun displayUserInfo() {
-//        val user = repository.currentUser
-//        user?.let {
-//            val info = """
-//                Name: ${it.displayName ?: "N/A"}
-//                Email: ${it.email ?: "N/A"}
-//                UID: ${it.uid}
-//            """.trimIndent()
-//            binding.userInfoTextView.text = info
-//        }
-//    }
-
-//    private fun setupListeners() {
-//        binding.btnLogout.setOnClickListener {
-//            repository.logout()
-//
-//        }
-//    }
 
     private fun navigateToLogin() {
         val intent = Intent(this, LoginActivity::class.java)

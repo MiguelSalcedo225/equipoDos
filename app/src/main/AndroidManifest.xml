@@ -30,9 +30,7 @@
             android:label="Inventory"
             android:exported="false" />
 
-        <activity
-            android:name="com.example.inventorywidget.view.RegisterActivity"
-            android:exported="false"/>
+
 
         <!-- Widget Provider -->
         <receiver
