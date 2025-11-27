@@ -94,7 +94,7 @@ class RegisterActivity : AppCompatActivity() {
         val allFieldsValid = isNameValid && isEmailValid && isPasswordValid
 
         binding.registerButton.isEnabled = allFieldsValid
-        binding.loginTextView.isEnabled = allFieldsValid
+//        binding.loginTextView.isEnabled = allFieldsValid
     }
 
     private fun setupObservers() {
