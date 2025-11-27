@@ -51,8 +51,8 @@ class WidgetViewModel(application: Application) : AndroidViewModel(application) 
      */
     fun formatBalance(balance: Double): String {
         val symbols = DecimalFormatSymbols(Locale.US).apply {
-            groupingSeparator = ','
-            decimalSeparator = '.'
+            groupingSeparator = '.'
+            decimalSeparator = ','
         }
         
         val formatter = DecimalFormat("#,##0.00", symbols)
@@ -63,7 +63,10 @@ class WidgetViewModel(application: Application) : AndroidViewModel(application) 
      * Obtiene el saldo formateado oculto
      * @return String con formato oculto
      */
-    fun getHiddenBalance(): String {
-        return "$****"
+    fun getHiddenBalance(balance: Double): String {
+        val formattedBalance = formatBalance(balance)
+        val cleanBalance = formattedBalance.replace(Regex("[^0-9]"), "")
+        val hiddenPart = "*".repeat(cleanBalance.length)
+        return "$$hiddenPart"
     }
 }

@@ -36,6 +36,7 @@ class AddProductFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupValidation()
         setupListeners()
+
     }
 
     private fun setupListeners() {
