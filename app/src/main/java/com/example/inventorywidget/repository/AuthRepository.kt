@@ -26,10 +26,10 @@ class AuthRepository {
                     )
                 )
             } else {
-                Resource.Error("Login failed")
+                Resource.Error("Login incorrecto")
             }
         } catch (e: Exception) {
-            Resource.Error(e.message ?: "An error occurred")
+            Resource.Error( "Login incorrecto")
         }
     }
 
