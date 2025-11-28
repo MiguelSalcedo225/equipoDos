@@ -1,6 +1,5 @@
 package com.example.inventorywidget.view
 
-
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -15,19 +14,21 @@ import com.example.inventorywidget.R
 import com.example.inventorywidget.databinding.ActivityLoginBinding
 import com.example.inventorywidget.utils.Resource
 import com.example.inventorywidget.viewmodel.LoginViewModel
-import com.example.inventorywidget.viewmodel.RegisterViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint  // ✅ This enables Hilt dependency injection in this Activity
 class LoginActivity : AppCompatActivity() {
 
+    // ✅ Hilt will automatically inject the ViewModel with all its dependencies
     private val viewModel: LoginViewModel by viewModels()
 
-    private val RViewModel: RegisterViewModel by viewModels()
     private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(viewModel.verifyUserIsLoggedIn()){
+        // Check if user is already logged in
+        if (viewModel.verifyUserIsLoggedIn()) {
             navigateToMain()
             return
         }
@@ -103,7 +104,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.loginState.observe(this) { result ->
+        viewModel.authState.observe(this) { result ->
             when (result) {
                 is Resource.Loading -> {
                     showLoading(true)
@@ -111,23 +112,6 @@ class LoginActivity : AppCompatActivity() {
                 is Resource.Success -> {
                     showLoading(false)
                     Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                    navigateToMain()
-                }
-                is Resource.Error -> {
-                    showLoading(false)
-                    Toast.makeText(this, result.message, Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-
-        RViewModel.registerState.observe(this) { result ->
-            when (result) {
-                is Resource.Loading -> {
-                    showLoading(true)
-                }
-                is Resource.Success -> {
-                    showLoading(false)
-                    Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
                     navigateToMain()
                 }
                 is Resource.Error -> {
@@ -149,7 +133,7 @@ class LoginActivity : AppCompatActivity() {
             if (binding.registerTextView.isEnabled) {
                 val email = binding.emailEditText.text.toString().trim()
                 val password = binding.passwordEditText.text.toString().trim()
-                RViewModel.register(email, password)
+                viewModel.register(email, password)
             }
         }
     }

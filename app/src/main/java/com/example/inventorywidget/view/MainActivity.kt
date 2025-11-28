@@ -3,22 +3,20 @@ package com.example.inventorywidget.view
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.inventorywidget.databinding.ActivityMainBinding
 import com.example.inventorywidget.R
-import com.example.inventorywidget.repository.AuthRepository
 import com.example.inventorywidget.viewmodel.LoginViewModel
-import com.google.android.material.appbar.MaterialToolbar
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: LoginViewModel by viewModels()

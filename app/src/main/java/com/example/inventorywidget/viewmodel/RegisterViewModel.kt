@@ -4,13 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.inventorywidget.domain.usecase.RegisterUseCase
 import com.example.inventorywidget.model.User
-import com.example.inventorywidget.repository.AuthRepository
 import com.example.inventorywidget.utils.Resource
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RegisterViewModel : ViewModel() {
-    private val repository = AuthRepository()
+class RegisterViewModel @Inject constructor(
+    private val registerUseCase: RegisterUseCase
+) : ViewModel() {
 
     private val _registerState = MutableLiveData<Resource<User>>()
     val registerState: LiveData<Resource<User>> = _registerState
@@ -29,7 +31,7 @@ class RegisterViewModel : ViewModel() {
         _registerState.value = Resource.Loading()
 
         viewModelScope.launch {
-            val result = repository.register(email, password)
+            val result = registerUseCase(email, password)
             _registerState.value = result
         }
     }
