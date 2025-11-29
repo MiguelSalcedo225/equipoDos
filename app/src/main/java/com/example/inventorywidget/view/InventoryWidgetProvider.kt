@@ -163,7 +163,7 @@ class InventoryWidgetProvider : AppWidgetProvider() {
         val openAppPendingIntent = PendingIntent.getBroadcast(
             context, 1, openAppIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        views.setOnClickPendingIntent(R.id.widget_manage_container, openAppPendingIntent)
+        views.setOnClickPendingIntent(R.id.widget_manage_icon, openAppPendingIntent)
     }
 
     private fun updateViewsWithData(views: RemoteViews, totalBalance: Double, isVisible: Boolean) {
