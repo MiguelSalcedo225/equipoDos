@@ -13,7 +13,9 @@ import com.example.inventorywidget.R
 import com.example.inventorywidget.databinding.FragmentItemEditBinding
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.viewmodel.InventoryViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ItemEditFragment : Fragment() {
 
     private lateinit var binding: FragmentItemEditBinding

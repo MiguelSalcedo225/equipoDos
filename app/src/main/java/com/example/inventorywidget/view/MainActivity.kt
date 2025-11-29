@@ -32,6 +32,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Check if user is logged in
+        if (!viewModel.verifyUserIsLoggedIn()) {
+            navigateToLogin()
+            return
+        }
+
 
 
 

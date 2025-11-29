@@ -2,12 +2,17 @@ package com.example.inventorywidget.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import com.example.inventorywidget.domain.usecase.LoginUseCase
+import com.example.inventorywidget.domain.usecase.VerifyUserIsLoggedInUseCase
 import com.example.inventorywidget.repository.ProductRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import java.util.Locale
 
 /**
@@ -15,10 +20,13 @@ import java.util.Locale
  * Maneja la lógica de cálculo del saldo total del inventario
  * siguiendo el patrón MVVM
  */
-class WidgetViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class WidgetViewModel @Inject constructor(
+    private val verifyUserIsLoggedInUseCase: VerifyUserIsLoggedInUseCase,
+    private val productRepository: ProductRepository
+): ViewModel(){
 
-    private val context = getApplication<Application>()
-    private val productRepository = ProductRepository(context)
+
 
     /**
      * Calcula el saldo total del inventario
@@ -28,14 +36,14 @@ class WidgetViewModel(application: Application) : AndroidViewModel(application) 
     suspend fun calculateTotalBalance(): Double {
         return withContext(Dispatchers.IO) {
             try {
-                val productList = productRepository.allProducts.first()
+                val productList = productRepository.allProducts().first()
                 var totalBalance = 0.0
-                
+
                 for (product in productList) {
                     val itemTotal = product.unitPrice * product.quantity
                     totalBalance += itemTotal
                 }
-                
+
                 totalBalance
             } catch (e: Exception) {
                 0.0
@@ -54,7 +62,7 @@ class WidgetViewModel(application: Application) : AndroidViewModel(application) 
             groupingSeparator = '.'
             decimalSeparator = ','
         }
-        
+
         val formatter = DecimalFormat("#,##0.00", symbols)
         return "$${formatter.format(balance)}"
     }
@@ -69,4 +77,6 @@ class WidgetViewModel(application: Application) : AndroidViewModel(application) 
         val hiddenPart = "*".repeat(cleanBalance.length)
         return "$$hiddenPart"
     }
+
+
 }
