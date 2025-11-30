@@ -4,26 +4,40 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.inventorywidget.domain.usecase.CalculateTotalBalanceUseCase
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
 import com.example.inventorywidget.utils.WidgetUpdateHelper
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class InventoryViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class InventoryViewModel @Inject constructor(
 
-    private val context = getApplication<Application>()
-    private val repository = ProductRepository(application)
+    private val repository: ProductRepository,
+    private val context: Application,
+    private val calculateTotalBalanceUseCase: CalculateTotalBalanceUseCase
+
+) : ViewModel() {
+
+
 
     /** Lista del inventario observada en tiempo real */
-    val listProduct: LiveData<List<Product>> = repository.allProducts.asLiveData()
+    val listProduct: LiveData<List<Product>> = repository.allProducts().asLiveData()
 
     private val _progressState = MutableLiveData(false)
     val progressState: LiveData<Boolean> = _progressState
 
-    val totalInventoryValue: LiveData<Double?> =
-        repository.totalInventoryValue.asLiveData()
+    private val _totalInventoryPrice = MutableLiveData<Double?>()
+
+    // 3. Expose as immutable LiveData
+    val totalInventoryValue: LiveData<Double?> = _totalInventoryPrice
+
+
 
     fun saveInventory(product: Product) {
         viewModelScope.launch {
@@ -34,6 +48,20 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
                 WidgetUpdateHelper.updateWidget(context)
             } finally {
                 _progressState.value = false
+            }
+        }
+    }
+
+    fun loadTotalBalance() {
+        viewModelScope.launch {
+            try {
+                // Call the use case (it runs on background because of Repository)
+                val total = calculateTotalBalanceUseCase()
+
+                // Update the LiveData
+                _totalInventoryPrice.value = total
+            } catch (e: Exception) {
+                _totalInventoryPrice.value = 0.0
             }
         }
     }

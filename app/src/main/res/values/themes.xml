@@ -6,5 +6,24 @@
         <item name="android:statusBarColor">@color/toolbar_gray</item>
         <item name="android:navigationBarColor">@color/dark_background</item>
         <item name="homeAsUpIndicator">@drawable/ic_arrow_back</item>
+        <!-- Primary brand color -->
+
+        <item name="colorPrimaryVariant">#E64A19</item>
+
+
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">#03DAC5</item>
+        <item name="colorSecondaryVariant">#018786</item>
+        <item name="colorOnSecondary">#000000</item>
+
+
+
+
+        <!-- Background color -->
+        <item name="android:windowBackground">@color/black</item>
+
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/gray_text</item>
     </style>
 </resources>
