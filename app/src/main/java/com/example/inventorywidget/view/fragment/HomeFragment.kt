@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.inventorywidget.R
 import com.example.inventorywidget.viewmodel.HomeViewModel
 import com.example.inventorywidget.databinding.FragmentHomeBinding
-import com.example.inventorywidget.viewmodel.HomeViewModelFactory
 import com.example.inventorywidget.viewmodel.ProductAdapter
 import java.text.NumberFormat
 import java.util.*
@@ -18,9 +17,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: HomeViewModel by viewModels {
-        HomeViewModelFactory(requireActivity().application)
-    }
+    private val viewModel: HomeViewModel by viewModels ()
     private lateinit var adapter: ProductAdapter
 
     override fun onCreateView(

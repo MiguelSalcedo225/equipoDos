@@ -37,4 +37,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
+    fun loadTotalBalance() {
+        viewModelScope.launch {
+            try {
+                // Call the use case (it runs on background because of Repository)
+                val total = calculateTotalBalanceUseCase()
+
+                // Update the LiveData
+                _totalInventoryPrice.value = total
+            } catch (e: Exception) {
+                _totalInventoryPrice.value = 0.0
+            }
+        }
+    }
 }
