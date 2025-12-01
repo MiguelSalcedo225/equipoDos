@@ -4,14 +4,21 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
 import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class AddItemViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
 
-    private val repository = ProductRepository(application)
+class AddItemViewModel @Inject constructor(
+    private val repository: ProductRepository
+): ViewModel() {
+
+
     private val _saveResult = MutableLiveData<SaveResult>()
     val saveResult: LiveData<SaveResult> = _saveResult
 
@@ -63,9 +70,7 @@ class AddItemViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun resetSaveResult() {
-        _saveResult.value = null
-    }
+
 }
 
 sealed class SaveResult {
