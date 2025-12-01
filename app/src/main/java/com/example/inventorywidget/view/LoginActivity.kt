@@ -1,5 +1,7 @@
 package com.example.inventorywidget.view
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -11,6 +13,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.inventorywidget.R
+import com.example.inventorywidget.data.preferences.WidgetPreferences
 import com.example.inventorywidget.databinding.ActivityLoginBinding
 import com.example.inventorywidget.utils.Resource
 import com.example.inventorywidget.viewmodel.LoginViewModel
@@ -23,13 +26,21 @@ class LoginActivity : AppCompatActivity() {
     private val viewModel: LoginViewModel by viewModels()
 
     private lateinit var binding: ActivityLoginBinding
+    
+    // Variables para manejar la redirección desde el widget
+    private var fromWidget: Boolean = false
+    private var widgetAction: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Verificar si viene desde el widget
+        fromWidget = intent.getBooleanExtra(InventoryWidgetProvider.EXTRA_FROM_WIDGET, false)
+        widgetAction = intent.getStringExtra(InventoryWidgetProvider.EXTRA_WIDGET_ACTION)
+
         // Check if user is already logged in
         if (viewModel.verifyUserIsLoggedIn()) {
-            navigateToMain()
+            handleSuccessfulAuth()
             return
         }
 
@@ -112,7 +123,7 @@ class LoginActivity : AppCompatActivity() {
                 is Resource.Success -> {
                     showLoading(false)
                     Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                    navigateToMain()
+                    handleSuccessfulAuth()
                 }
                 is Resource.Error -> {
                     showLoading(false)
@@ -144,6 +155,39 @@ class LoginActivity : AppCompatActivity() {
         binding.emailEditText.isEnabled = !isLoading
         binding.passwordEditText.isEnabled = !isLoading
         binding.registerTextView.isEnabled = !isLoading
+    }
+
+    /**
+     * Maneja la navegación después de autenticación exitosa
+     * Criterio 10: Si viene del widget para mostrar saldo, actualiza el widget y muestra el saldo
+     * Criterio 13: Si viene del widget para gestionar, va al Home Inventario
+     */
+    private fun handleSuccessfulAuth() {
+        if (fromWidget) {
+            when (widgetAction) {
+                InventoryWidgetProvider.ACTION_SHOW_BALANCE -> {
+                    // Criterio 10: Mostrar el saldo en el widget después del login
+                    val widgetPreferences = WidgetPreferences(this)
+                    widgetPreferences.setBalanceVisible(true)
+                    
+                    // Actualizar todos los widgets
+                    InventoryWidgetProvider.updateAllWidgets(this)
+                    
+                    // Mostrar mensaje y cerrar la actividad
+                    Toast.makeText(this, "Saldo visible en el widget", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                InventoryWidgetProvider.ACTION_MANAGE -> {
+                    // Criterio 13: Ir al Home Inventario después del login
+                    navigateToMain()
+                }
+                else -> {
+                    navigateToMain()
+                }
+            }
+        } else {
+            navigateToMain()
+        }
     }
 
     private fun navigateToMain() {

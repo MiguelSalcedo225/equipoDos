@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
+import com.example.inventorywidget.view.InventoryWidgetProvider
 import kotlinx.coroutines.launch
 
 class AddItemViewModel(application: Application) : AndroidViewModel(application) {
@@ -55,6 +56,10 @@ class AddItemViewModel(application: Application) : AndroidViewModel(application)
                 )
 
                 repository.insertProduct(product)
+                
+                // Actualizar el widget en tiempo real
+                InventoryWidgetProvider.updateAllWidgets(getApplication())
+                
                 _saveResult.value = SaveResult.Success
 
             } catch (e: Exception) {

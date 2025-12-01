@@ -13,13 +13,14 @@ import kotlinx.coroutines.launch
 import androidx.lifecycle.asLiveData
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
+import com.example.inventorywidget.utils.WidgetUpdateHelper
 
 
 /**
  * ViewModel para el DetailFragment
  * Maneja la lógica de carga y eliminación de productos
  */
-class DetailViewModel(application: Application) : ViewModel() {
+class DetailViewModel(private val application: Application) : ViewModel() {
 
     private val repository = ProductRepository(application)
 
@@ -60,6 +61,8 @@ class DetailViewModel(application: Application) : ViewModel() {
                 val product = repository.getProductByCode(id)
                 if (product != null) {
                     repository.deleteProduct(product)
+                    // Actualizar widget cuando se elimina un producto
+                    WidgetUpdateHelper.updateWidget(application)
                     _error.value = null
                 }
             } catch (e: Exception) {
