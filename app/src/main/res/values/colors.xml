@@ -10,4 +10,16 @@
     <color name="toolbar_gray">#424242</color>
     <color name="light_gray">#D3D3D3</color>
 
+
+    <!-- Button colors -->
+    <color name="orange_button">#FF5722</color>
+    <color name="orange_button_disabled">#4DFF5722</color>
+
+    <!-- Text colors -->
+    <color name="gray_text">#9EA1A1</color>
+    <color name="white_text">#FFFFFF</color>
+
+    <!-- Error color -->
+    <color name="red_error">#FF0000</color>
+
 </resources>

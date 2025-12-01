@@ -66,16 +66,18 @@ class ItemDetailsFragment : Fragment() {
                 binding.tvName.text = product.name
                 binding.tvPrice.text = formatCurrency(product.unitPrice)
                 binding.tvQuantity.text = product.quantity.toString()
+                binding.txtTotal.text=formatCurrency(product.unitPrice * product.quantity)
+
 
             }
         }
 
-        viewModel.totalInventoryPrice.observe(viewLifecycleOwner) { totalInventoryPrice ->
-
-            totalInventoryPrice?.let {
-                binding.txtTotal.text=formatCurrency(it)
-            }
-            }
+//        viewModel.totalInventoryPrice.observe(viewLifecycleOwner) { totalInventoryPrice ->
+//
+//            totalInventoryPrice?.let {
+//                binding.txtTotal.text=formatCurrency(it)
+//            }
+//            }
 
 
 

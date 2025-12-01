@@ -3,6 +3,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("org.jetbrains.kotlin.kapt")
     id("androidx.navigation.safeargs.kotlin")
+    id("com.google.gms.google-services")
+    id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -39,6 +42,7 @@ android {
     }
     buildFeatures {
         dataBinding = true
+        viewBinding = true
     }
 }
 
@@ -61,6 +65,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.1")
     //corrutinas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
     //viewmodel
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
@@ -76,6 +81,7 @@ dependencies {
     implementation("androidx.room:room-ktx:2.8.3")
     implementation ("com.getbase:floatingactionbutton:1.10.1")
 
+
     // SharedPreferences
     implementation("androidx.preference:preference-ktx:1.2.1")
 
@@ -84,6 +90,15 @@ dependencies {
 
     // Lottie (animación huella digital)
     implementation("com.airbnb.android:lottie:6.4.0")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+    implementation("com.google.firebase:firebase-auth")
+
+    // dagger hilt
+    implementation("com.google.dagger:hilt-android:2.57.1")
+    ksp("com.google.dagger:hilt-android-compiler:2.57.1")
+
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
