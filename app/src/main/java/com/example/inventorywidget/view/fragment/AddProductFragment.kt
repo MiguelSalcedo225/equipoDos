@@ -12,17 +12,18 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.inventorywidget.databinding.FragmentAddItemBinding
 import com.example.inventorywidget.viewmodel.AddItemViewModel
-import com.example.inventorywidget.viewmodel.AddProductViewModelFactory
 import com.example.inventorywidget.viewmodel.SaveResult
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddProductFragment : Fragment() {
 
     private var _binding: FragmentAddItemBinding? = null
     private val binding get() = _binding!!
 
-    private val addItemViewModel: AddItemViewModel by viewModels {
-        AddProductViewModelFactory(requireActivity().application)
-    }
+    private val addItemViewModel: AddItemViewModel by viewModels()
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
