@@ -38,12 +38,9 @@ class HomeViewModel @Inject constructor(
 
     init {
         loadTotalBalance()
-    }
-
-    init {
         loadProducts()
     }
-    private fun loadProducts() {
+    fun loadProducts() {
         viewModelScope.launch {
             _isLoading.value = true
             // Simular tiempo de carga
