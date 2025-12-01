@@ -10,14 +10,16 @@ import com.example.inventorywidget.R
 import com.example.inventorywidget.viewmodel.HomeViewModel
 import com.example.inventorywidget.databinding.FragmentHomeBinding
 import com.example.inventorywidget.viewmodel.ProductAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.NumberFormat
 import java.util.*
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: HomeViewModel by viewModels ()
+    private val viewModel: HomeViewModel by viewModels()
     private lateinit var adapter: ProductAdapter
 
     override fun onCreateView(

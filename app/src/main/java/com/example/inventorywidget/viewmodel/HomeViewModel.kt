@@ -2,15 +2,24 @@ package com.example.inventorywidget.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.example.inventorywidget.domain.usecase.CalculateTotalBalanceUseCase
 import com.example.inventorywidget.repository.ProductRepository
 import com.example.inventorywidget.model.Product
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
 
-    private val repository = ProductRepository(application)
+    private val repository: ProductRepository,
+    private val calculateTotalBalanceUseCase: CalculateTotalBalanceUseCase
+
+) : ViewModel() {
+
+
 
     /** Estado de carga */
     private val _isLoading = MutableLiveData<Boolean>()
@@ -20,8 +29,16 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _allProducts = MutableLiveData<List<Product>>()
     val allProducts: LiveData<List<Product>> get() = _allProducts
 
-    /** Valor total del inventario */
-    val totalInventoryValue: LiveData<Double?> = repository.totalInventoryValue.asLiveData()
+
+    // 2. Create MutableLiveData (Backing property)
+    private val _totalInventoryPrice = MutableLiveData<Double?>()
+
+    // 3. Expose as immutable LiveData
+    val totalInventoryValue: LiveData<Double?> = _totalInventoryPrice
+
+    init {
+        loadTotalBalance()
+    }
 
     init {
         loadProducts()
@@ -31,7 +48,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             _isLoading.value = true
             // Simular tiempo de carga
             delay(2000)
-            repository.allProducts.collect { productList ->
+            repository.allProducts().collect { productList ->
                 _allProducts.value = productList
                 _isLoading.value = false
             }
