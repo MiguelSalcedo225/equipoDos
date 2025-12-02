@@ -99,6 +99,7 @@ dependencies {
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore-ktx")
 
     // dagger hilt
     implementation("com.google.dagger:hilt-android:2.57.1")

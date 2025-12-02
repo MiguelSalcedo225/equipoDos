@@ -3,11 +3,10 @@ package com.example.inventorywidget.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.example.inventorywidget.model.Product
-import com.example.inventorywidget.repository.AuthRepository
 import com.example.inventorywidget.repository.ProductRepository
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -24,8 +23,8 @@ class WidgetViewModel(
     private val firebaseAuth: FirebaseAuth? = null
 ) : AndroidViewModel(application) {
 
-    private val context = getApplication<Application>()
-    private val repository: ProductRepository = productRepository ?: ProductRepository(context)
+    private val repository: ProductRepository = productRepository 
+        ?: ProductRepository(FirebaseFirestore.getInstance())
     private val auth: FirebaseAuth = firebaseAuth ?: FirebaseAuth.getInstance()
 
     /**
@@ -39,12 +38,15 @@ class WidgetViewModel(
     /**
      * Calcula el saldo total del inventario
      * Criterio 8: Multiplica precio × cantidad de cada producto y suma todos
+     * Usa getProductsSnapshot() para obtener datos frescos directamente de Firestore
      * @return saldo total como Double
      */
     suspend fun calculateTotalBalance(): Double {
         return withContext(Dispatchers.IO) {
             try {
-                val productList = repository.allProducts.first()
+                // Usar getProductsSnapshot() para obtener datos frescos de Firestore
+                // en lugar de allProducts().first() que usa el listener cache
+                val productList = repository.getProductsSnapshot()
                 calculateBalanceFromProducts(productList)
             } catch (e: Exception) {
                 0.0

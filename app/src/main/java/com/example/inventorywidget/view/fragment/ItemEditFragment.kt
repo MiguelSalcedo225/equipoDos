@@ -38,8 +38,13 @@ class ItemEditFragment : Fragment() {
         setupListeners()
     }
 
+    @Suppress("DEPRECATION")
     private fun setupData() {
-        val arg = requireArguments().getSerializable("dataInventory")
+        val arg = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            requireArguments().getSerializable("dataInventory", Product::class.java)
+        } else {
+            requireArguments().getSerializable("dataInventory")
+        }
 
         if (arg is Product) {
             receivedProduct = arg
