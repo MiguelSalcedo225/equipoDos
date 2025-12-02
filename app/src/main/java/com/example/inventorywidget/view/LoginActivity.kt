@@ -21,10 +21,10 @@ import com.example.inventorywidget.utils.Resource
 import com.example.inventorywidget.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint  // ✅ This enables Hilt dependency injection in this Activity
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
-    // ✅ Hilt will automatically inject the ViewModel with all its dependencies
+
     private val viewModel: LoginViewModel by viewModels()
 
     private lateinit var binding: ActivityLoginBinding
