@@ -13,11 +13,16 @@ import com.example.inventorywidget.R
 import com.example.inventorywidget.databinding.FragmentItemEditBinding
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.viewmodel.InventoryViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ItemEditFragment : Fragment() {
 
     private lateinit var binding: FragmentItemEditBinding
+
+    // Usamos la factory manual
     private val inventoryViewModel: InventoryViewModel by viewModels()
+
     private lateinit var receivedProduct: Product
 
     override fun onCreateView(
@@ -37,15 +42,12 @@ class ItemEditFragment : Fragment() {
 
     private fun setupData() {
         val arg = requireArguments().getSerializable("dataInventory")
-
         if (arg is Product) {
             receivedProduct = arg
-
             binding.etId.setText(getString(R.string.inventory_id, receivedProduct.code))
             binding.etName.setText(receivedProduct.name)
             binding.etPrice.setText(receivedProduct.unitPrice.toString())
             binding.etQuantity.setText(receivedProduct.quantity.toString())
-
             validateFields()
         } else {
             Toast.makeText(requireContext(), "No se pudo cargar el producto", Toast.LENGTH_SHORT).show()
@@ -54,21 +56,17 @@ class ItemEditFragment : Fragment() {
     }
 
     private fun setupListeners() {
-
         binding.etName.addTextChangedListener { validateFields() }
         binding.etPrice.addTextChangedListener { validateFields() }
         binding.etQuantity.addTextChangedListener { validateFields() }
 
-        binding.btnEdit.setOnClickListener {
-            updateProduct()
-        }
+        binding.btnEdit.setOnClickListener { updateProduct() }
     }
 
     private fun validateFields() {
         val name = binding.etName.text.toString().trim()
         val price = binding.etPrice.text.toString().trim()
         val quantity = binding.etQuantity.text.toString().trim()
-
         binding.btnEdit.isEnabled = name.isNotEmpty() && price.isNotEmpty() && quantity.isNotEmpty()
     }
 
@@ -83,7 +81,7 @@ class ItemEditFragment : Fragment() {
         }
 
         try {
-            val price = priceStr.toDouble() // unitPrice es Double
+            val price = priceStr.toDouble()
             val quantity = quantityStr.toInt()
 
             if (priceStr.length > 20 || quantityStr.length > 4) {

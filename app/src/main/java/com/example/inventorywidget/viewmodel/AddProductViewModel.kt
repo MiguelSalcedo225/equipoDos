@@ -1,17 +1,27 @@
 package com.example.inventorywidget.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
+import com.example.inventorywidget.view.InventoryWidgetProvider
+import com.example.inventorywidget.view.WidgetUpdateHandler
+import com.example.inventorywidget.view.WidgetUpdateHandlerImpl
 import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class AddItemViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class AddItemViewModel @Inject constructor(
+    private val repository: ProductRepository,
+    private val application: Application,
+    private val widgetUpdater: WidgetUpdateHandler = WidgetUpdateHandlerImpl()
+) : ViewModel() {
 
-    private val repository = ProductRepository(application)
+
     private val _saveResult = MutableLiveData<SaveResult>()
     val saveResult: LiveData<SaveResult> = _saveResult
 
@@ -55,6 +65,10 @@ class AddItemViewModel(application: Application) : AndroidViewModel(application)
                 )
 
                 repository.insertProduct(product)
+                
+                // Actualizar el widget en tiempo real
+                widgetUpdater.update(application)
+
                 _saveResult.value = SaveResult.Success
 
             } catch (e: Exception) {
@@ -63,9 +77,7 @@ class AddItemViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun resetSaveResult() {
-        _saveResult.value = null
-    }
+
 }
 
 sealed class SaveResult {

@@ -1,35 +1,48 @@
 package com.example.inventorywidget.view
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.example.inventorywidget.R
+import com.example.inventorywidget.data.preferences.WidgetPreferences
 import com.example.inventorywidget.databinding.ActivityLoginBinding
 import com.example.inventorywidget.utils.Resource
 import com.example.inventorywidget.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint  // ✅ This enables Hilt dependency injection in this Activity
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
-    // ✅ Hilt will automatically inject the ViewModel with all its dependencies
+
     private val viewModel: LoginViewModel by viewModels()
 
     private lateinit var binding: ActivityLoginBinding
+    
+    // Variables para manejar la redirección desde el widget
+    private var fromWidget: Boolean = false
+    private var widgetAction: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Verificar si viene desde el widget
+        fromWidget = intent.getBooleanExtra(InventoryWidgetProvider.EXTRA_FROM_WIDGET, false)
+        widgetAction = intent.getStringExtra(InventoryWidgetProvider.EXTRA_WIDGET_ACTION)
+
         // Check if user is already logged in
         if (viewModel.verifyUserIsLoggedIn()) {
-            navigateToMain()
+            handleSuccessfulAuth()
             return
         }
 
@@ -37,16 +50,41 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //invert the toggle eye password
+        invertPasswordToggleIcons()
+
         // Remove action bar and set fullscreen
         supportActionBar?.hide()
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
+        setFullscreen()
 
         setupTextWatchers()
         setupObservers()
         setupListeners()
+    }
+
+    private fun invertPasswordToggleIcons() {
+        // Set closed eye when password is hidden (default state)
+        binding.passwordInputLayout.setEndIconDrawable(R.drawable.ic_eye_closed)
+
+        // Add click listener to toggle
+        binding.passwordInputLayout.setEndIconOnClickListener {
+            val isPasswordVisible = binding.passwordEditText.inputType !=
+                    (android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD)
+
+            if (isPasswordVisible) {
+                // Hide password - show closed eye
+                binding.passwordEditText.inputType =
+                    android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
+                binding.passwordInputLayout.setEndIconDrawable(R.drawable.ic_eye_closed)
+            } else {
+                // Show password - show open eye
+                binding.passwordEditText.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+                binding.passwordInputLayout.setEndIconDrawable(R.drawable.ic_eye_open)
+            }
+
+            // Move cursor to end of text
+            binding.passwordEditText.setSelection(binding.passwordEditText.text?.length ?: 0)
+        }
     }
 
     private fun setupTextWatchers() {
@@ -112,7 +150,7 @@ class LoginActivity : AppCompatActivity() {
                 is Resource.Success -> {
                     showLoading(false)
                     Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                    navigateToMain()
+                    handleSuccessfulAuth()
                 }
                 is Resource.Error -> {
                     showLoading(false)
@@ -146,11 +184,51 @@ class LoginActivity : AppCompatActivity() {
         binding.registerTextView.isEnabled = !isLoading
     }
 
+    /**
+     * Maneja la navegación después de autenticación exitosa
+     * Criterio 10: Si viene del widget para mostrar saldo, actualiza el widget y muestra el saldo
+     * Criterio 13: Si viene del widget para gestionar, va al Home Inventario
+     */
+    private fun handleSuccessfulAuth() {
+        if (fromWidget) {
+            when (widgetAction) {
+                InventoryWidgetProvider.ACTION_SHOW_BALANCE -> {
+                    // Criterio 10: Mostrar el saldo en el widget después del login
+                    val widgetPreferences = WidgetPreferences(this)
+                    widgetPreferences.setBalanceVisible(true)
+                    
+                    // Actualizar todos los widgets
+                    InventoryWidgetProvider.updateAllWidgets(this)
+                    
+                    // Mostrar mensaje y cerrar la actividad
+                    Toast.makeText(this, "Saldo visible en el widget", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                InventoryWidgetProvider.ACTION_MANAGE -> {
+                    // Criterio 13: Ir al Home Inventario después del login
+                    navigateToMain()
+                }
+                else -> {
+                    navigateToMain()
+                }
+            }
+        } else {
+            navigateToMain()
+        }
+    }
+
     private fun navigateToMain() {
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
+    }
+
+    private fun setFullscreen() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.hide(WindowInsetsCompat.Type.statusBars())
+        controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 
     override fun onDestroy() {

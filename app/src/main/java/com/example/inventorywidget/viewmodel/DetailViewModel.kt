@@ -11,22 +11,29 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.inventorywidget.domain.usecase.CalculateTotalBalanceUseCase
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 
 /**
  * ViewModel para el DetailFragment
  * Maneja la lógica de carga y eliminación de productos
  */
-class DetailViewModel(application: Application) : ViewModel() {
+@HiltViewModel
+class DetailViewModel @Inject constructor(
+    private val repository: ProductRepository,
+    private val calculateTotalBalanceUseCase: CalculateTotalBalanceUseCase
 
-    private val repository = ProductRepository(application)
+): ViewModel() {
+
+
 
     private val _product = MutableLiveData<Product?>()
     val product: LiveData<Product?> get() = _product
-
-    val totalInventoryPrice: LiveData<Double?> = repository.totalInventoryValue.asLiveData()
 
 
 
@@ -49,7 +56,7 @@ class DetailViewModel(application: Application) : ViewModel() {
         }
     }
 
-    
+
 
     /**
      * Elimina un producto por su código
@@ -70,5 +77,3 @@ class DetailViewModel(application: Application) : ViewModel() {
 
 
 }
-
-
