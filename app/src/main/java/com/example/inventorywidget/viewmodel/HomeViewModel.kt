@@ -1,6 +1,5 @@
 package com.example.inventorywidget.viewmodel
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.example.inventorywidget.domain.usecase.CalculateTotalBalanceUseCase
 import com.example.inventorywidget.repository.ProductRepository

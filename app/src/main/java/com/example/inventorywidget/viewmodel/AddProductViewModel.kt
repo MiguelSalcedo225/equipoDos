@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
-import com.example.inventorywidget.view.InventoryWidgetProvider
 import com.example.inventorywidget.view.WidgetUpdateHandler
 import com.example.inventorywidget.view.WidgetUpdateHandlerImpl
 import kotlinx.coroutines.launch

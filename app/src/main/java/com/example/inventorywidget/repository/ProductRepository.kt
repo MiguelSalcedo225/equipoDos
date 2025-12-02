@@ -2,6 +2,7 @@ package com.example.inventorywidget.repository
 
 import com.example.inventorywidget.model.Product
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -24,10 +25,18 @@ class ProductRepository @Inject constructor(
 
     suspend fun getProductsSnapshot(): List<Product> {
         return try {
-            val snapshot = productsCollection.get().await()
+            // Usar Source.SERVER para forzar lectura desde el servidor
+            // y obtener los datos más actualizados después de una edición
+            val snapshot = productsCollection.get(Source.SERVER).await()
             snapshot.toObjects(Product::class.java)
         } catch (e: Exception) {
-            emptyList()
+            // Si falla la lectura del servidor (ej: sin conexión), intentar desde caché
+            try {
+                val snapshot = productsCollection.get(Source.CACHE).await()
+                snapshot.toObjects(Product::class.java)
+            } catch (e: Exception) {
+                emptyList()
+            }
         }
     }
 

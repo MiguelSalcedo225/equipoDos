@@ -1,7 +1,6 @@
 package com.example.inventorywidget.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,10 +11,10 @@ import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
 import com.example.inventorywidget.utils.WidgetUpdateHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltViewModel
 class InventoryViewModel @Inject constructor(
@@ -74,6 +73,9 @@ class InventoryViewModel @Inject constructor(
             _progressState.value = true
             try {
                 repository.updateProduct(product)
+                // Pequeño delay para asegurar que Firestore sincronice los datos
+                // antes de actualizar el widget
+                delay(300)
                 WidgetUpdateHelper.updateWidget(context)
             } finally {
                 _progressState.value = false

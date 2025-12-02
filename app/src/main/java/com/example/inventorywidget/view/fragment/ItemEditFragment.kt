@@ -24,6 +24,9 @@ class ItemEditFragment : Fragment() {
     private val inventoryViewModel: InventoryViewModel by viewModels()
 
     private lateinit var receivedProduct: Product
+    
+    // Bandera para saber si estamos en proceso de actualización
+    private var isUpdating = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,6 +64,15 @@ class ItemEditFragment : Fragment() {
         binding.etQuantity.addTextChangedListener { validateFields() }
 
         binding.btnEdit.setOnClickListener { updateProduct() }
+
+        // Observar cuando termina la actualización para navegar
+        inventoryViewModel.progressState.observe(viewLifecycleOwner) { isLoading ->
+            if (!isLoading && isUpdating) {
+                // La actualización terminó, ahora podemos navegar
+                isUpdating = false
+                findNavController().navigate(R.id.action_itemEditFragment_to_homeInventoryFragment)
+            }
+        }
     }
 
     private fun validateFields() {
@@ -96,9 +108,13 @@ class ItemEditFragment : Fragment() {
                 quantity = quantity
             )
 
+            // Marcar que estamos actualizando y deshabilitar el botón
+            isUpdating = true
+            binding.btnEdit.isEnabled = false
+            
             inventoryViewModel.updateInventory(updatedProduct)
             Toast.makeText(requireContext(), "Producto actualizado correctamente", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_itemEditFragment_to_homeInventoryFragment)
+            // La navegación se hace en el observer de progressState
 
         } catch (_: NumberFormatException) {
             Toast.makeText(requireContext(), "Verifique los valores numéricos", Toast.LENGTH_SHORT).show()
