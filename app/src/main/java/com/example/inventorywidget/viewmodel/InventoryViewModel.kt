@@ -4,42 +4,55 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.inventorywidget.domain.usecase.CalculateTotalBalanceUseCase
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
-import com.example.inventorywidget.view.InventoryWidgetProvider
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
+import com.example.inventorywidget.utils.WidgetUpdateHelper
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 
-class InventoryViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class InventoryViewModel @Inject constructor(
 
-    private val context = getApplication<Application>()
-    private val repository = ProductRepository(FirebaseFirestore.getInstance())
+    private val repository: ProductRepository,
+    @ApplicationContext private val context: Context,
+    private val calculateTotalBalanceUseCase: CalculateTotalBalanceUseCase
 
-    /** Lista del inventario observada en tiempo real */
+) : ViewModel() {
+
     val listProduct: LiveData<List<Product>> = repository.allProducts().asLiveData()
 
     private val _progressState = MutableLiveData(false)
     val progressState: LiveData<Boolean> = _progressState
 
-    /** Valor total del inventario calculado */
-    val totalInventoryValue: LiveData<Double> = repository.allProducts()
-        .map { products -> products.sumOf { it.unitPrice * it.quantity } }
-        .asLiveData()
+    private val _totalInventoryPrice = MutableLiveData<Double?>()
+    val totalInventoryValue: LiveData<Double?> = _totalInventoryPrice
 
     fun saveInventory(product: Product) {
         viewModelScope.launch {
             _progressState.value = true
             try {
                 repository.insertProduct(product)
-                // Pequeño delay para que Firestore sincronice antes de actualizar el widget
-                delay(300)
-                InventoryWidgetProvider.updateAllWidgets(context)
+                WidgetUpdateHelper.updateWidget(context)
             } finally {
                 _progressState.value = false
+            }
+        }
+    }
+
+    fun loadTotalBalance() {
+        viewModelScope.launch {
+            try {
+                val total = calculateTotalBalanceUseCase()
+                _totalInventoryPrice.value = total
+            } catch (e: Exception) {
+                _totalInventoryPrice.value = 0.0
             }
         }
     }
@@ -49,9 +62,7 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
             _progressState.value = true
             try {
                 repository.deleteProduct(product)
-                // Pequeño delay para que Firestore sincronice antes de actualizar el widget
-                delay(300)
-                InventoryWidgetProvider.updateAllWidgets(context)
+                WidgetUpdateHelper.updateWidget(context)
             } finally {
                 _progressState.value = false
             }
@@ -63,16 +74,13 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
             _progressState.value = true
             try {
                 repository.updateProduct(product)
-                // Pequeño delay para que Firestore sincronice antes de actualizar el widget
-                delay(300)
-                InventoryWidgetProvider.updateAllWidgets(context)
+                WidgetUpdateHelper.updateWidget(context)
             } finally {
                 _progressState.value = false
             }
         }
     }
 
-    fun totalProducto(price: Double, quantity: Int): Double {
-        return price * quantity
-    }
+    fun totalProducto(price: Double, quantity: Int): Double =
+        price * quantity
 }
