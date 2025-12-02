@@ -50,6 +50,9 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //invert the toggle eye password
+        invertPasswordToggleIcons()
+
         // Remove action bar and set fullscreen
         supportActionBar?.hide()
         setFullscreen()
@@ -57,6 +60,31 @@ class LoginActivity : AppCompatActivity() {
         setupTextWatchers()
         setupObservers()
         setupListeners()
+    }
+
+    private fun invertPasswordToggleIcons() {
+        // Set closed eye when password is hidden (default state)
+        binding.passwordInputLayout.setEndIconDrawable(R.drawable.ic_eye_closed)
+
+        // Add click listener to toggle
+        binding.passwordInputLayout.setEndIconOnClickListener {
+            val isPasswordVisible = binding.passwordEditText.inputType !=
+                    (android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD)
+
+            if (isPasswordVisible) {
+                // Hide password - show closed eye
+                binding.passwordEditText.inputType =
+                    android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
+                binding.passwordInputLayout.setEndIconDrawable(R.drawable.ic_eye_closed)
+            } else {
+                // Show password - show open eye
+                binding.passwordEditText.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+                binding.passwordInputLayout.setEndIconDrawable(R.drawable.ic_eye_open)
+            }
+
+            // Move cursor to end of text
+            binding.passwordEditText.setSelection(binding.passwordEditText.text?.length ?: 0)
+        }
     }
 
     private fun setupTextWatchers() {
