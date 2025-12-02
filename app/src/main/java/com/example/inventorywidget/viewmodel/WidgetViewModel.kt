@@ -2,37 +2,36 @@ package com.example.inventorywidget.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
+import javax.inject.Inject
 
 /**
  * ViewModel para el Widget de Inventory
  * Maneja la lógica de cálculo del saldo total del inventario
  * siguiendo el patrón MVVM
  */
-class WidgetViewModel(
+@HiltViewModel
+class WidgetViewModel @Inject constructor(
     application: Application,
-    private val productRepository: ProductRepository? = null,
-    private val firebaseAuth: FirebaseAuth? = null
+    private val productRepository: ProductRepository,
+    private val firebaseAuth: FirebaseAuth
 ) : AndroidViewModel(application) {
-
-    private val repository: ProductRepository = productRepository 
-        ?: ProductRepository(FirebaseFirestore.getInstance())
-    private val auth: FirebaseAuth = firebaseAuth ?: FirebaseAuth.getInstance()
 
     /**
      * Verifica si el usuario está logueado
      * @return true si el usuario está autenticado
      */
     fun isUserLoggedIn(): Boolean {
-        return auth.currentUser != null
+        return firebaseAuth.currentUser != null
     }
 
     /**
@@ -46,7 +45,7 @@ class WidgetViewModel(
             try {
                 // Usar getProductsSnapshot() para obtener datos frescos de Firestore
                 // en lugar de allProducts().first() que usa el listener cache
-                val productList = repository.getProductsSnapshot()
+                val productList = productRepository.getProductsSnapshot()
                 calculateBalanceFromProducts(productList)
             } catch (e: Exception) {
                 0.0
@@ -79,7 +78,7 @@ class WidgetViewModel(
             groupingSeparator = '.'
             decimalSeparator = ','
         }
-        
+
         val formatter = DecimalFormat("#,##0.00", symbols)
         return "$${formatter.format(balance)}"
     }

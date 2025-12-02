@@ -14,20 +14,20 @@ import com.example.inventorywidget.databinding.FragmentItemDetailsBinding
 import java.text.NumberFormat
 import java.util.*
 import com.example.inventorywidget.viewmodel.DetailViewModel
-import com.example.inventorywidget.viewmodel.DetailViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Fragment que muestra los detalles de un producto específico
  * Permite ver la información completa del producto y editar si es necesario
  */
+
+@AndroidEntryPoint
 class ItemDetailsFragment : Fragment() {
 
     private var _binding: FragmentItemDetailsBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: DetailViewModel by viewModels {
-        DetailViewModelFactory(requireActivity().application)
-    }
+    private val viewModel: DetailViewModel by viewModels()
 
     private val args: ItemDetailsFragmentArgs by navArgs()
 
@@ -72,22 +72,7 @@ class ItemDetailsFragment : Fragment() {
             }
         }
 
-//        viewModel.totalInventoryPrice.observe(viewLifecycleOwner) { totalInventoryPrice ->
-//
-//            totalInventoryPrice?.let {
-//                binding.txtTotal.text=formatCurrency(it)
-//            }
-//            }
 
-
-
-//        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-//            if (errorMessage != null) {
-//                // Mostrar un mensaje de error
-//                binding.tvErrorMessage.visibility = View.VISIBLE
-//                binding.tvErrorMessage.text = errorMessage
-//            }
-//        }
     }
 
     /**
@@ -136,8 +121,7 @@ class ItemDetailsFragment : Fragment() {
      * Formatea un número como moneda
      */
     private fun formatCurrency(value: Double): String {
-        val locale = Locale.Builder().setLanguage("es").setRegion("CO").build()
-        val format = NumberFormat.getCurrencyInstance(locale)
+        val format = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
         return format.format(value)
     }
 

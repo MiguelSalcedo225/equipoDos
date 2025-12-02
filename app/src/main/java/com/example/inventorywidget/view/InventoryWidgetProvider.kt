@@ -9,11 +9,19 @@ import android.content.Intent
 import android.widget.RemoteViews
 import com.example.inventorywidget.R
 import com.example.inventorywidget.data.preferences.WidgetPreferences
-import com.example.inventorywidget.viewmodel.WidgetViewModel
+import com.example.inventorywidget.repository.ProductRepository
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 /**
  * Widget Provider para Inventory
@@ -21,6 +29,17 @@ import kotlinx.coroutines.launch
  * Implementa los criterios 7, 10, 13, 14 para la navegación y autenticación
  */
 class InventoryWidgetProvider : AppWidgetProvider() {
+
+    /**
+     * EntryPoint para acceder a las dependencias de Hilt desde el Widget
+     */
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface WidgetProviderEntryPoint {
+        fun firebaseAuth(): FirebaseAuth
+        fun productRepository(): ProductRepository
+        fun widgetPreferences(): WidgetPreferences
+    }
 
     companion object {
         const val ACTION_TOGGLE_BALANCE = "com.example.inventorywidget.TOGGLE_BALANCE"
@@ -38,13 +57,24 @@ class InventoryWidgetProvider : AppWidgetProvider() {
             val appWidgetIds = appWidgetManager.getAppWidgetIds(
                 ComponentName(context, InventoryWidgetProvider::class.java)
             )
-            
+
             val intent = Intent(context, InventoryWidgetProvider::class.java).apply {
                 action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
             }
             context.sendBroadcast(intent)
         }
+    }
+
+    /**
+     * Obtiene las dependencias desde Hilt EntryPoint
+     */
+    private fun getEntryPoint(context: Context): WidgetProviderEntryPoint {
+        val appContext = context.applicationContext
+        return EntryPointAccessors.fromApplication(
+            appContext,
+            WidgetProviderEntryPoint::class.java
+        )
     }
 
     override fun onUpdate(
@@ -77,14 +107,16 @@ class InventoryWidgetProvider : AppWidgetProvider() {
      * Si no está logueado: redirige al Login
      */
     private fun handleToggleBalance(context: Context) {
-        val firebaseAuth = FirebaseAuth.getInstance()
+        val entryPoint = getEntryPoint(context)
+        val firebaseAuth = entryPoint.firebaseAuth()
+        val widgetPreferences = entryPoint.widgetPreferences()
+
         val isLoggedIn = firebaseAuth.currentUser != null
 
         if (isLoggedIn) {
             // Usuario logueado: alternar visibilidad del saldo (Criterio 7)
-            val widgetPreferences = WidgetPreferences(context)
             widgetPreferences.toggleBalanceVisibility()
-            
+
             // Actualizar todos los widgets
             updateAllWidgets(context)
         } else {
@@ -104,7 +136,8 @@ class InventoryWidgetProvider : AppWidgetProvider() {
      * Si no está logueado: redirige al Login
      */
     private fun handleManageInventory(context: Context) {
-        val firebaseAuth = FirebaseAuth.getInstance()
+        val entryPoint = getEntryPoint(context)
+        val firebaseAuth = entryPoint.firebaseAuth()
         val isLoggedIn = firebaseAuth.currentUser != null
 
         if (isLoggedIn) {
@@ -127,7 +160,8 @@ class InventoryWidgetProvider : AppWidgetProvider() {
     override fun onEnabled(context: Context) {
         // Primera instancia del widget creada
         // Resetear preferencias del widget
-        val widgetPreferences = WidgetPreferences(context)
+        val entryPoint = getEntryPoint(context)
+        val widgetPreferences = entryPoint.widgetPreferences()
         widgetPreferences.setBalanceVisible(false)
     }
 
@@ -144,9 +178,12 @@ class InventoryWidgetProvider : AppWidgetProvider() {
         appWidgetId: Int
     ) {
         val views = RemoteViews(context.packageName, R.layout.inventory_widget)
-        val widgetPreferences = WidgetPreferences(context)
-        val widgetViewModel = WidgetViewModel(context.applicationContext as android.app.Application)
-        val isLoggedIn = widgetViewModel.isUserLoggedIn()
+        val entryPoint = getEntryPoint(context)
+        val widgetPreferences = entryPoint.widgetPreferences()
+        val firebaseAuth = entryPoint.firebaseAuth()
+        val productRepository = entryPoint.productRepository()
+
+        val isLoggedIn = firebaseAuth.currentUser != null
 
         // Configurar intent para alternar visibilidad del saldo (Criterio 6, 7)
         val toggleBalanceIntent = Intent(context, InventoryWidgetProvider::class.java).apply {
@@ -174,28 +211,76 @@ class InventoryWidgetProvider : AppWidgetProvider() {
 
         // Actualizar UI del widget en segundo plano
         CoroutineScope(Dispatchers.Main).launch {
-            val totalBalance = widgetViewModel.calculateTotalBalance()
-            val isBalanceVisible = widgetPreferences.isBalanceVisible() && isLoggedIn
+            try {
+                val totalBalance = calculateTotalBalance(productRepository)
+                val isBalanceVisible = widgetPreferences.isBalanceVisible() && isLoggedIn
 
-            // Actualizar texto del saldo (Criterio 5, 8, 9)
-            val balanceText = if (isBalanceVisible) {
-                widgetViewModel.formatBalance(totalBalance)
-            } else {
-                widgetViewModel.getHiddenBalance()
+                // Actualizar texto del saldo (Criterio 5, 8, 9)
+                val balanceText = if (isBalanceVisible) {
+                    formatBalance(totalBalance)
+                } else {
+                    getHiddenBalance()
+                }
+                views.setTextViewText(R.id.widget_balance, balanceText)
+
+                // Actualizar ícono del ojo (Criterio 6, 7)
+                // Ojo cerrado = saldo oculto, Ojo abierto = saldo visible
+                val eyeIcon = if (isBalanceVisible) {
+                    R.drawable.ic_eye_open
+                } else {
+                    R.drawable.ic_eye_closed
+                }
+                views.setImageViewResource(R.id.widget_eye_icon, eyeIcon)
+
+                // Actualizar el widget
+                appWidgetManager.updateAppWidget(appWidgetId, views)
+            } catch (e: Exception) {
+                // En caso de error, mostrar saldo oculto
+                views.setTextViewText(R.id.widget_balance, getHiddenBalance())
+                views.setImageViewResource(R.id.widget_eye_icon, R.drawable.ic_eye_closed)
+                appWidgetManager.updateAppWidget(appWidgetId, views)
             }
-            views.setTextViewText(R.id.widget_balance, balanceText)
-
-            // Actualizar ícono del ojo (Criterio 6, 7)
-            // Ojo cerrado = saldo oculto, Ojo abierto = saldo visible
-            val eyeIcon = if (isBalanceVisible) {
-                R.drawable.ic_eye_open
-            } else {
-                R.drawable.ic_eye_closed
-            }
-            views.setImageViewResource(R.id.widget_eye_icon, eyeIcon)
-
-            // Actualizar el widget
-            appWidgetManager.updateAppWidget(appWidgetId, views)
         }
+    }
+
+    /**
+     * Calcula el saldo total del inventario
+     */
+    private suspend fun calculateTotalBalance(productRepository: ProductRepository): Double {
+        return withContext(Dispatchers.IO) {
+            try {
+                val productList = productRepository.getProductsSnapshot()
+                var totalBalance = 0.0
+                for (product in productList) {
+                    val itemTotal = product.unitPrice * product.quantity
+                    totalBalance += itemTotal
+                }
+                totalBalance
+            } catch (e: Exception) {
+                0.0
+            }
+        }
+    }
+
+    /**
+     * Formatea el saldo con separadores de miles y dos decimales
+     * Criterio 9: Ejemplo 3.326.000,00
+     */
+    private fun formatBalance(balance: Double): String {
+        val symbols = DecimalFormatSymbols(Locale.GERMANY).apply {
+            groupingSeparator = '.'
+            decimalSeparator = ','
+        }
+
+        val formatter = DecimalFormat("#,##0.00", symbols)
+        return "$${formatter.format(balance)}"
+    }
+
+    /**
+     * Obtiene el saldo formateado oculto
+     * Criterio 5: Signo de pesos y 4 asteriscos
+     */
+    private fun getHiddenBalance(): String {
+        return "$****"
     }
 }

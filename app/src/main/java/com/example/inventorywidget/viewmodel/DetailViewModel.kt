@@ -1,36 +1,39 @@
 package com.example.inventorywidget.viewmodel
 
+
+
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.inventorywidget.domain.usecase.CalculateTotalBalanceUseCase
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
-import com.example.inventorywidget.utils.WidgetUpdateHelper
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.flow.map
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 
 /**
  * ViewModel para el DetailFragment
  * Maneja la lógica de carga y eliminación de productos
  */
-class DetailViewModel(private val application: Application) : ViewModel() {
+@HiltViewModel
+class DetailViewModel @Inject constructor(
+    private val repository: ProductRepository,
+    private val calculateTotalBalanceUseCase: CalculateTotalBalanceUseCase
 
-    private val repository = ProductRepository(FirebaseFirestore.getInstance())
+): ViewModel() {
+
+
 
     private val _product = MutableLiveData<Product?>()
     val product: LiveData<Product?> get() = _product
-
-    /** Valor total del inventario calculado */
-    val totalInventoryPrice: LiveData<Double> = repository.allProducts()
-        .map { products -> products.sumOf { it.unitPrice * it.quantity } }
-        .asLiveData()
 
 
 
@@ -53,7 +56,7 @@ class DetailViewModel(private val application: Application) : ViewModel() {
         }
     }
 
-    
+
 
     /**
      * Elimina un producto por su código
@@ -64,8 +67,6 @@ class DetailViewModel(private val application: Application) : ViewModel() {
                 val product = repository.getProductByCode(id)
                 if (product != null) {
                     repository.deleteProduct(product)
-                    // Actualizar widget cuando se elimina un producto
-                    WidgetUpdateHelper.updateWidget(application)
                     _error.value = null
                 }
             } catch (e: Exception) {
@@ -76,5 +77,3 @@ class DetailViewModel(private val application: Application) : ViewModel() {
 
 
 }
-
-

@@ -1,24 +1,23 @@
 package com.example.inventorywidget.data.preferences
 
-import android.content.Context
 import android.content.SharedPreferences
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Gestor de sesión de usuario usando SharedPreferences
  * Maneja el estado de autenticación del usuario
+ * Inyectado con Dagger Hilt
  */
-class SessionManager(context: Context) {
-
-    private val prefs: SharedPreferences = context.getSharedPreferences(
-        PREF_NAME,
-        Context.MODE_PRIVATE
-    )
+@Singleton
+class SessionManager @Inject constructor(
+    private val prefs: SharedPreferences
+) {
 
     companion object {
-        private const val PREF_NAME = "inventory_session"
-        private const val KEY_IS_LOGGED_IN = "is_logged_in"
-        private const val KEY_USER_NAME = "user_name"
-        private const val KEY_LAST_LOGIN = "last_login"
+        const val KEY_IS_LOGGED_IN = "is_logged_in"
+        const val KEY_USER_NAME = "user_name"
+        const val KEY_LAST_LOGIN = "last_login"
     }
 
     /**
@@ -38,6 +37,20 @@ class SessionManager(context: Context) {
      */
     fun isLoggedIn(): Boolean {
         return prefs.getBoolean(KEY_IS_LOGGED_IN, false)
+    }
+
+    /**
+     * Obtiene el nombre del usuario
+     */
+    fun getUserName(): String? {
+        return prefs.getString(KEY_USER_NAME, null)
+    }
+
+    /**
+     * Obtiene la fecha del último login
+     */
+    fun getLastLogin(): Long {
+        return prefs.getLong(KEY_LAST_LOGIN, 0L)
     }
 
     /**
