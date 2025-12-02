@@ -8,30 +8,36 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
-import com.example.inventorywidget.utils.WidgetUpdateHelper
+import com.example.inventorywidget.view.InventoryWidgetProvider
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class InventoryViewModel(application: Application) : AndroidViewModel(application) {
 
     private val context = getApplication<Application>()
-    private val repository = ProductRepository(application)
+    private val repository = ProductRepository(FirebaseFirestore.getInstance())
 
     /** Lista del inventario observada en tiempo real */
-    val listProduct: LiveData<List<Product>> = repository.allProducts.asLiveData()
+    val listProduct: LiveData<List<Product>> = repository.allProducts().asLiveData()
 
     private val _progressState = MutableLiveData(false)
     val progressState: LiveData<Boolean> = _progressState
 
-    val totalInventoryValue: LiveData<Double?> =
-        repository.totalInventoryValue.asLiveData()
+    /** Valor total del inventario calculado */
+    val totalInventoryValue: LiveData<Double> = repository.allProducts()
+        .map { products -> products.sumOf { it.unitPrice * it.quantity } }
+        .asLiveData()
 
     fun saveInventory(product: Product) {
         viewModelScope.launch {
             _progressState.value = true
             try {
                 repository.insertProduct(product)
-                // Actualizar widget cuando se guarda un producto
-                WidgetUpdateHelper.updateWidget(context)
+                // Pequeño delay para que Firestore sincronice antes de actualizar el widget
+                delay(300)
+                InventoryWidgetProvider.updateAllWidgets(context)
             } finally {
                 _progressState.value = false
             }
@@ -43,8 +49,9 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
             _progressState.value = true
             try {
                 repository.deleteProduct(product)
-                // Actualizar widget cuando se elimina un producto
-                WidgetUpdateHelper.updateWidget(context)
+                // Pequeño delay para que Firestore sincronice antes de actualizar el widget
+                delay(300)
+                InventoryWidgetProvider.updateAllWidgets(context)
             } finally {
                 _progressState.value = false
             }
@@ -56,8 +63,9 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
             _progressState.value = true
             try {
                 repository.updateProduct(product)
-                // Actualizar widget cuando se actualiza un producto
-                WidgetUpdateHelper.updateWidget(context)
+                // Pequeño delay para que Firestore sincronice antes de actualizar el widget
+                delay(300)
+                InventoryWidgetProvider.updateAllWidgets(context)
             } finally {
                 _progressState.value = false
             }

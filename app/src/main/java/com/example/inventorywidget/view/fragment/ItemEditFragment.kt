@@ -13,11 +13,14 @@ import com.example.inventorywidget.R
 import com.example.inventorywidget.databinding.FragmentItemEditBinding
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.viewmodel.InventoryViewModel
+import com.example.inventorywidget.viewmodel.InventoryViewModelFactory
 
 class ItemEditFragment : Fragment() {
 
     private lateinit var binding: FragmentItemEditBinding
-    private val inventoryViewModel: InventoryViewModel by viewModels()
+    private val inventoryViewModel: InventoryViewModel by viewModels {
+        InventoryViewModelFactory(requireActivity().application)
+    }
     private lateinit var receivedProduct: Product
 
     override fun onCreateView(
@@ -35,8 +38,13 @@ class ItemEditFragment : Fragment() {
         setupListeners()
     }
 
+    @Suppress("DEPRECATION")
     private fun setupData() {
-        val arg = requireArguments().getSerializable("dataInventory")
+        val arg = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            requireArguments().getSerializable("dataInventory", Product::class.java)
+        } else {
+            requireArguments().getSerializable("dataInventory")
+        }
 
         if (arg is Product) {
             receivedProduct = arg

@@ -1,32 +1,36 @@
 package com.example.inventorywidget.viewmodel
 
-
-
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import androidx.lifecycle.asLiveData
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
+import com.example.inventorywidget.utils.WidgetUpdateHelper
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.map
 
 
 /**
  * ViewModel para el DetailFragment
  * Maneja la lógica de carga y eliminación de productos
  */
-class DetailViewModel(application: Application) : ViewModel() {
+class DetailViewModel(private val application: Application) : ViewModel() {
 
-    private val repository = ProductRepository(application)
+    private val repository = ProductRepository(FirebaseFirestore.getInstance())
 
     private val _product = MutableLiveData<Product?>()
     val product: LiveData<Product?> get() = _product
 
-    val totalInventoryPrice: LiveData<Double?> = repository.totalInventoryValue.asLiveData()
+    /** Valor total del inventario calculado */
+    val totalInventoryPrice: LiveData<Double> = repository.allProducts()
+        .map { products -> products.sumOf { it.unitPrice * it.quantity } }
+        .asLiveData()
 
 
 
@@ -60,6 +64,8 @@ class DetailViewModel(application: Application) : ViewModel() {
                 val product = repository.getProductByCode(id)
                 if (product != null) {
                     repository.deleteProduct(product)
+                    // Actualizar widget cuando se elimina un producto
+                    WidgetUpdateHelper.updateWidget(application)
                     _error.value = null
                 }
             } catch (e: Exception) {

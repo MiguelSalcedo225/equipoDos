@@ -1,23 +1,27 @@
-package com.example.inventorywidget
+package com.example.inventorywidget.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.inventorywidget.domain.usecase.CalculateTotalBalanceUseCase
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
-import com.example.inventorywidget.viewmodel.HomeViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.*
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
+import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
+@ExperimentalCoroutinesApi
 class HomeViewModelTest {
 
     @get:Rule
@@ -51,25 +55,25 @@ class HomeViewModelTest {
             Product(code = 1001, name = "Laptop", unitPrice = 1000.0, quantity = 5),
             Product(code = 1002, name = "Mouse", unitPrice = 25.0, quantity = 10)
         )
-        `when`(productRepository.allProducts()).thenReturn(flowOf(mockProducts))
+        Mockito.`when`(productRepository.allProducts()).thenReturn(flowOf(mockProducts))
         // When: Se inicializa el ViewModel (que llama loadProducts en init)
         homeViewModel = HomeViewModel(productRepository, calculateTotalBalanceUseCase)
         advanceUntilIdle()
         // Then: La lista de productos debe estar cargada
-        assertEquals(mockProducts, homeViewModel.allProducts.value)
-        verify(productRepository).allProducts()
+        Assert.assertEquals(mockProducts, homeViewModel.allProducts.value)
+        Mockito.verify(productRepository).allProducts()
     }
 
     @Test
     fun `loadProducts maneja correctamente una lista vacía`() = runTest {
         // Given: Una lista vacía
-        `when`(productRepository.allProducts()).thenReturn(flowOf(emptyList()))
+        Mockito.`when`(productRepository.allProducts()).thenReturn(flowOf(emptyList()))
         // When: Se inicializa el ViewModel
         homeViewModel = HomeViewModel(productRepository, calculateTotalBalanceUseCase)
         advanceUntilIdle()
         // Then: La lista debe estar vacía
-        assertNotNull(homeViewModel.allProducts.value)
-        assertTrue(homeViewModel.allProducts.value?.isEmpty() ?: false)
+        Assert.assertNotNull(homeViewModel.allProducts.value)
+        Assert.assertTrue(homeViewModel.allProducts.value?.isEmpty() ?: false)
     }
 
     @Test
@@ -78,12 +82,12 @@ class HomeViewModelTest {
         val mockProducts = listOf(
             Product(code = 1, name = "Test", unitPrice = 10.0, quantity = 1)
         )
-        `when`(productRepository.allProducts()).thenReturn(flowOf(mockProducts))
+        Mockito.`when`(productRepository.allProducts()).thenReturn(flowOf(mockProducts))
         // When: Se inicializa el ViewModel
         homeViewModel = HomeViewModel(productRepository, calculateTotalBalanceUseCase)
         advanceUntilIdle()
         // Then: isLoading debe ser false al finalizar
-        assertFalse(homeViewModel.isLoading.value ?: true)
+        Assert.assertFalse(homeViewModel.isLoading.value ?: true)
     }
 
     @Test
@@ -94,30 +98,30 @@ class HomeViewModelTest {
             Product(code = 1, name = "Test", unitPrice = 1000.0, quantity = 5),
             Product(code = 2, name = "Test2", unitPrice = 100.0, quantity = 5)
         )
-        `when`(productRepository.allProducts()).thenReturn(flowOf(mockProducts))
-        `when`(productRepository.getProductsSnapshot()).thenReturn(mockProducts)
-        `when`(calculateTotalBalanceUseCase.invoke()).thenReturn(expectedBalance)
-        // When: Se inicializa el ViewModel (init llama loadTotalBalance)
+        Mockito.`when`(productRepository.allProducts()).thenReturn(flowOf(mockProducts))
+        Mockito.`when`(productRepository.getProductsSnapshot()).thenReturn(mockProducts)
+        Mockito.`when`(calculateTotalBalanceUseCase.invoke()).thenReturn(expectedBalance)
+        // When
         homeViewModel = HomeViewModel(productRepository, calculateTotalBalanceUseCase)
         advanceUntilIdle()
 
         // Then: El balance total debe ser el esperado
-        assertEquals(expectedBalance, homeViewModel.totalInventoryValue.value)
-        verify(calculateTotalBalanceUseCase).invoke()
+        Assert.assertEquals(expectedBalance, homeViewModel.totalInventoryValue.value)
+        Mockito.verify(calculateTotalBalanceUseCase).invoke()
     }
 
     @Test
     fun `loadTotalBalance maneja excepciones y devuelve 0`() = runTest {
         // Given: Un caso donde el use case lanza excepción
-        `when`(productRepository.allProducts()).thenReturn(flowOf(emptyList()))
-        `when`(productRepository.getProductsSnapshot()).thenReturn(emptyList())
-        `when`(calculateTotalBalanceUseCase.invoke())
+        Mockito.`when`(productRepository.allProducts()).thenReturn(flowOf(emptyList()))
+        Mockito.`when`(productRepository.getProductsSnapshot()).thenReturn(emptyList())
+        Mockito.`when`(calculateTotalBalanceUseCase.invoke())
             .thenThrow(RuntimeException("Error al calcular"))
-        // When: Se inicializa el ViewModel
+        // When
         homeViewModel = HomeViewModel(productRepository, calculateTotalBalanceUseCase)
         advanceUntilIdle()
         // Then: El balance debe ser 0.0
-        assertEquals(0.0, homeViewModel.totalInventoryValue.value)
+        Assert.assertEquals(0.0, homeViewModel.totalInventoryValue.value)
     }
 
     @Test
@@ -127,15 +131,15 @@ class HomeViewModelTest {
         )
         val expectedBalance = 5000.0
 
-        `when`(productRepository.allProducts()).thenReturn(flowOf(mockProducts))
-        `when`(calculateTotalBalanceUseCase.invoke()).thenReturn(expectedBalance)
-        // When: Se inicializa el ViewModel
+        Mockito.`when`(productRepository.allProducts()).thenReturn(flowOf(mockProducts))
+        Mockito.`when`(calculateTotalBalanceUseCase.invoke()).thenReturn(expectedBalance)
+        // When
         homeViewModel = HomeViewModel(productRepository, calculateTotalBalanceUseCase)
         advanceUntilIdle()
-        // Then: Ambos métodos deben haber sido llamados y sus valores actualizados
-        verify(productRepository).allProducts()
-        verify(calculateTotalBalanceUseCase).invoke()
-        assertEquals(mockProducts, homeViewModel.allProducts.value)
-        assertEquals(expectedBalance, homeViewModel.totalInventoryValue.value)
+        // Then
+        Mockito.verify(productRepository).allProducts()
+        Mockito.verify(calculateTotalBalanceUseCase).invoke()
+        Assert.assertEquals(mockProducts, homeViewModel.allProducts.value)
+        Assert.assertEquals(expectedBalance, homeViewModel.totalInventoryValue.value)
     }
 }

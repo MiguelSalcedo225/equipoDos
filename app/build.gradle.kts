@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("org.jetbrains.kotlin.kapt")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
     id("com.google.dagger.hilt.android")
@@ -46,6 +45,12 @@ android {
     }
 }
 
+// Configuración de KSP para Hilt
+ksp {
+    arg("dagger.fastInit", "enabled")
+    arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
+}
+
 dependencies {
 
     val navVersion = "2.9.0"
@@ -76,9 +81,9 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
 
     // Room
-    implementation("androidx.room:room-runtime:2.8.3")
-    kapt("androidx.room:room-compiler:2.8.3")
-    implementation("androidx.room:room-ktx:2.8.3")
+    implementation("androidx.room:room-runtime:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
     implementation ("com.getbase:floatingactionbutton:1.10.1")
 
 
@@ -92,25 +97,20 @@ dependencies {
     implementation("com.airbnb.android:lottie:6.4.0")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
     // dagger hilt
     implementation("com.google.dagger:hilt-android:2.57.1")
     ksp("com.google.dagger:hilt-android-compiler:2.57.1")
 
-    //testing
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.11.0")
-    testImplementation("org.mockito:mockito-inline:5.2.0")
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation("org.mockito:mockito-core:5.8.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
-    debugImplementation("org.jacoco:org.jacoco.core:0.8.7")
-
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
