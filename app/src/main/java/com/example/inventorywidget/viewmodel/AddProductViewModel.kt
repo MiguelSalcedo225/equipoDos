@@ -1,21 +1,21 @@
 package com.example.inventorywidget.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.inventorywidget.model.Product
 import com.example.inventorywidget.repository.ProductRepository
+import com.example.inventorywidget.view.InventoryWidgetProvider
 import kotlinx.coroutines.launch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-
 class AddItemViewModel @Inject constructor(
-    private val repository: ProductRepository
+    private val repository: ProductRepository,
+    private val application: Application
 ): ViewModel() {
 
 
@@ -62,6 +62,10 @@ class AddItemViewModel @Inject constructor(
                 )
 
                 repository.insertProduct(product)
+                
+                // Actualizar el widget en tiempo real
+                InventoryWidgetProvider.updateAllWidgets(application)
+                
                 _saveResult.value = SaveResult.Success
 
             } catch (e: Exception) {

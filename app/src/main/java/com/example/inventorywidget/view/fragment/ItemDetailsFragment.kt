@@ -136,7 +136,8 @@ class ItemDetailsFragment : Fragment() {
      * Formatea un número como moneda
      */
     private fun formatCurrency(value: Double): String {
-        val format = NumberFormat.getCurrencyInstance(Locale("es", "CO"))
+        val locale = Locale.Builder().setLanguage("es").setRegion("CO").build()
+        val format = NumberFormat.getCurrencyInstance(locale)
         return format.format(value)
     }
 

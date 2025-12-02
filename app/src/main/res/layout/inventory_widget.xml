@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="150dp"
     android:background="@drawable/widget_background"
     android:padding="16dp">
 
@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/widget_logo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:contentDescription="Logo Inventory"
             android:src="@mipmap/ic_launcher" />
 
@@ -29,7 +29,7 @@
             android:layout_marginTop="4dp"
             android:text="Inventory"
             android:textColor="#e7522e"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -56,7 +56,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginStart="8dp"
-            android:src="@drawable/ic_eye_open"
+            android:src="@drawable/ic_eye_closed"
             android:contentDescription="Mostrar/Ocultar saldo"
             android:clickable="true"
             android:focusable="true" />
@@ -64,13 +64,14 @@
 
     <TextView
         android:id="@+id/widget_balance"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_below="@id/widget_top_right_container"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
         android:text="$****"
         android:textColor="#FFFFFF"
-        android:textSize="32sp"
+        android:textSize="28sp"
         android:textStyle="bold"
         android:gravity="end" />
 
