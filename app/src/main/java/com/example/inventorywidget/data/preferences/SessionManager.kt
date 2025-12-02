@@ -41,20 +41,6 @@ class SessionManager(context: Context) {
     }
 
     /**
-     * Obtiene el nombre del usuario
-     */
-    fun getUserName(): String {
-        return prefs.getString(KEY_USER_NAME, "") ?: ""
-    }
-
-    /**
-     * Obtiene la fecha del último login
-     */
-    fun getLastLogin(): Long {
-        return prefs.getLong(KEY_LAST_LOGIN, 0)
-    }
-
-    /**
      * Cierra la sesión del usuario
      */
     fun logout() {
